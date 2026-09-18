@@ -1844,7 +1844,8 @@
           <td class="p-3 text-slate-600">${cert.kategori}</td>
           <td class="p-3 text-slate-600">${cert.institusiPenerbit}</td>
           <td class="p-3 text-slate-500">${cert.tahunPerolehan}</td>
-          <td class="p-3 text-right">
+          <td class="p-3 text-right whitespace-nowrap">
+            <button onclick="openModalCert('${cert.id}')" class="p-1.5 text-slate-500 hover:text-brand-600 mr-1" title="Edit Sertifikat"><i class="fa-solid fa-pen-to-square"></i></button>
             <button onclick="confirmDeleteCert('${cert.id}')" class="p-1.5 text-slate-500 hover:text-rose-600" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
           </td>
         </tr>
@@ -2366,9 +2367,29 @@
       openModal('modal-confirm-delete');
     }
 
-    function openModalCert() {
-      document.getElementById('cert-id').value = '';
+    function openModalCert(id = null) {
+      const modalTitle = document.getElementById('modal-cert-title');
+      const idInput = document.getElementById('cert-id');
+
+      if (id) {
+        const cert = appState.sertifikasi.find(c => c.id === id);
+        if (cert) {
+          if (modalTitle) modalTitle.innerText = 'Edit Sertifikasi';
+          idInput.value = cert.id;
+          document.getElementById('cert-name').value = cert.judulPenghargaan || '';
+          document.getElementById('cert-category').value = cert.kategori || 'Sertifikasi Profesi';
+          document.getElementById('cert-issuer').value = cert.institusiPenerbit || '';
+          document.getElementById('cert-year').value = cert.tahunPerolehan || '';
+          document.getElementById('cert-photo-url').value = cert.fotoSertifikatUrl || '';
+          openModal('modal-cert');
+          return;
+        }
+      }
+
+      if (modalTitle) modalTitle.innerText = 'Tambah Sertifikasi';
+      idInput.value = '';
       document.getElementById('cert-name').value = '';
+      document.getElementById('cert-category').value = 'Sertifikasi Profesi';
       document.getElementById('cert-issuer').value = '';
       document.getElementById('cert-year').value = new Date().getFullYear();
       document.getElementById('cert-photo-url').value = '';
@@ -2377,6 +2398,7 @@
 
     async function handleSaveCert(e) {
       e.preventDefault();
+      const id = document.getElementById('cert-id').value;
       const judul_penghargaan = document.getElementById('cert-name').value.trim();
       const kategori = document.getElementById('cert-category').value;
       const tahun_perolehan = document.getElementById('cert-year').value.trim();
@@ -2384,28 +2406,56 @@
       const rawPhotoUrl = document.getElementById('cert-photo-url').value.trim();
       const foto_sertifikat_url = convertGoogleDriveUrl(rawPhotoUrl) || 'https://images.unsplash.com/photo-1589330694653-dad6ef49ca60?w=800&auto=format&fit=crop&q=80';
 
-      let newId = 'cert_' + Date.now();
-      if (supabaseClient) {
-        const { data, error } = await supabaseClient.from('sertifikasi').insert([{ 
-          judul_penghargaan, kategori, tahun_perolehan, institusi_penerbit, foto_sertifikat_url 
-        }]).select('id').single();
+      if (id) {
+        // Mode Edit Sertifikat
+        if (supabaseClient && !id.startsWith('cert_')) {
+          const { error } = await supabaseClient.from('sertifikasi').update({
+            judul_penghargaan, kategori, tahun_perolehan, institusi_penerbit, foto_sertifikat_url
+          }).eq('id', id);
 
-        if (error) {
-          showToast("Gagal simpan sertifikat: " + error.message, "Gagal", "error");
-          return;
+          if (error) {
+            showToast("Gagal memperbarui sertifikat: " + error.message, "Gagal", "error");
+            return;
+          }
         }
-        if (data && data.id) newId = data.id;
-      }
 
-      appState.sertifikasi.unshift({
-        id: newId, judulPenghargaan: judul_penghargaan, kategori, tahunPerolehan: tahun_perolehan, institusiPenerbit: institusi_penerbit, fotoSertifikatUrl: foto_sertifikat_url
-      });
+        const idx = appState.sertifikasi.findIndex(c => c.id === id);
+        if (idx !== -1) {
+          appState.sertifikasi[idx] = {
+            ...appState.sertifikasi[idx],
+            judulPenghargaan: judul_penghargaan,
+            kategori,
+            tahunPerolehan: tahun_perolehan,
+            institusiPenerbit: institusi_penerbit,
+            fotoSertifikatUrl: foto_sertifikat_url
+          };
+        }
+        showToast('Sertifikat berhasil diperbarui!', 'Tersimpan');
+      } else {
+        // Mode Tambah Sertifikat Baru
+        let newId = 'cert_' + Date.now();
+        if (supabaseClient) {
+          const { data, error } = await supabaseClient.from('sertifikasi').insert([{ 
+            judul_penghargaan, kategori, tahun_perolehan, institusi_penerbit, foto_sertifikat_url 
+          }]).select('id').single();
+
+          if (error) {
+            showToast("Gagal simpan sertifikat: " + error.message, "Gagal", "error");
+            return;
+          }
+          if (data && data.id) newId = data.id;
+        }
+
+        appState.sertifikasi.unshift({
+          id: newId, judulPenghargaan: judul_penghargaan, kategori, tahunPerolehan: tahun_perolehan, institusiPenerbit: institusi_penerbit, fotoSertifikatUrl: foto_sertifikat_url
+        });
+        showToast('Sertifikat berhasil ditambahkan!', 'Tersimpan');
+      }
 
       closeModal('modal-cert');
       saveToLocalCache();
       renderAdminDashboard();
       renderPublicCertifications();
-      showToast('Sertifikat berhasil ditambahkan!', 'Tersimpan');
     }
 
     function confirmDeleteCert(id) {
