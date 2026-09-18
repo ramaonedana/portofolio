@@ -632,7 +632,7 @@
 
   <footer class="bg-white border-t border-slate-200 py-8 text-slate-500 text-xs text-center">
     <div class="max-w-7xl mx-auto px-4 space-y-2">
-      <p class="font-medium text-slate-700">&copy; <span id="footer-year"></span> <span id="footer-teacher-name">Budi Prasetyo, M.Pd.</span> &mdash; Seluruh Hak Cipta Dilindungi.</p>
+      <p class="font-medium text-slate-700 cursor-pointer select-none" onclick="handleSecretLogoClick(event)">&copy; <span id="footer-year"></span> <span id="footer-teacher-name">Budi Prasetyo, M.Pd.</span> &mdash; Seluruh Hak Cipta Dilindungi.</p>
       <p class="text-slate-400">Dirancang khusus untuk portofolio pendidik profesional.</p>
     </div>
   </footer>
@@ -950,8 +950,7 @@
     */
     const SUPABASE_URL = 'https://nlystxxokrujzvvchujj.supabase.co';
     const SUPABASE_KEY = '
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5seXN0eHhva3J1anp2dmNodWpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk2ODk4NjEsImV4cCI6MjEwNTI2NTg2MX0.OQRjpNtmbP3L8_YtdnDs74Qrn4HEFxPVJT-CpJv525Y
-';
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5seXN0eHhva3J1anp2dmNodWpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk2ODk4NjEsImV4cCI6MjEwNTI2NTg2MX0.OQRjpNtmbP3L8_YtdnDs74Qrn4HEFxPVJT-CpJv525Y';
 
     let supabaseClient = null;
     try {
@@ -1869,9 +1868,28 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5seXN0eHh
       loadDataFromSupabase();
       initScrollspy();
       
-      // Pintasan keyboard aman khusus: Ctrl + M (atau Cmd + M)
+      // Buka CMS otomatis jika URL mengandung #admin atau ?admin
+      if (window.location.hash === '#admin' || window.location.search.includes('admin')) {
+        setTimeout(() => {
+          if (appState.auth.isLoggedIn) switchView('admin');
+          else openModal('modal-login');
+        }, 300);
+      }
+
+      window.addEventListener('hashchange', function() {
+        if (window.location.hash === '#admin') {
+          if (appState.auth.isLoggedIn) switchView('admin');
+          else openModal('modal-login');
+        }
+      });
+      
+      // Pintasan keyboard aman: Ctrl + M atau Ctrl + Shift + A
       window.addEventListener('keydown', function(event) {
-        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'm') {
+        const isCtrlOrCmd = event.ctrlKey || event.metaKey;
+        const isKeyM = event.key.toLowerCase() === 'm';
+        const isKeyA = event.key.toLowerCase() === 'a' && event.shiftKey;
+
+        if (isCtrlOrCmd && (isKeyM || isKeyA)) {
           event.preventDefault();
           if (appState.auth.isLoggedIn) switchView('admin');
           else openModal('modal-login');
