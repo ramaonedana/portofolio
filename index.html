@@ -435,7 +435,7 @@
                   </div>
                   <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center"><i class="fa-solid fa-location-dot"></i></div>
-                    <span>DKI Jakarta, Indonesia</span>
+                    <span id="contact-location-label">DKI Jakarta, Indonesia</span>
                   </div>
                 </div>
               </div>
@@ -537,10 +537,15 @@
                   <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Fokus / Bidang Keahlian</label>
                   <input type="text" id="adm-prof-subject" class="w-full px-3.5 py-2 border rounded-xl text-sm" required>
                 </div>
-                <div class="md:col-span-2">
+                <div>
                   <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Alamat Email Kontak Publik</label>
                   <input type="email" id="adm-prof-email" class="w-full px-3.5 py-2 border rounded-xl text-sm" placeholder="nama@sekolah.id" required>
-                  <span class="text-[10px] text-slate-400 mt-1 block"><i class="fa-solid fa-circle-info text-brand-600 mr-1"></i>Email ini yang ditampilkan pada bagian 'Mari Berdiskusi' di web publik.</span>
+                  <span class="text-[10px] text-slate-400 mt-1 block"><i class="fa-solid fa-circle-info text-brand-600 mr-1"></i>Email yang ditampilkan di bagian kontak.</span>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Lokasi / Alamat Domisili Publik</label>
+                  <input type="text" id="adm-prof-location" class="w-full px-3.5 py-2 border rounded-xl text-sm" placeholder="Contoh: Pelalawan, Pangkalan Kerinci, Indonesia" required>
+                  <span class="text-[10px] text-slate-400 mt-1 block"><i class="fa-solid fa-location-dot text-brand-600 mr-1"></i>Alamat / wilayah yang ditampilkan di bagian kontak.</span>
                 </div>
 
                 <div class="md:col-span-2 p-6 bg-gradient-to-br from-brand-50/60 to-white rounded-2xl border border-brand-200 space-y-4 shadow-sm">
@@ -1044,7 +1049,8 @@
       biografiLengkap: 'Saya meyakini bahwa setiap peserta didik memiliki ritme dan potensi unik yang siap berkembang bila diberi ruang eksplorasi yang tepat.',
       filosofiMengajar: 'Pendidikan bukan sekadar mengisi bejana yang kosong, melainkan menyalakan api keingintahuan peserta didik.',
       fotoProfilUrl: 'https://pngimg.com/d/teacher_PNG62451.png',
-      emailKontak: 'budi.prasetyo@sekolah.id'
+      emailKontak: 'budi.prasetyo@sekolah.id',
+      lokasiKontak: 'DKI Jakarta, Indonesia'
     };
 
     const appState = {
@@ -1087,6 +1093,14 @@
         appState.profil.emailKontak = customEmail;
       }
 
+      // Deteksi jika pengguna telah mengubah alamat domisili langsung di kode HTML
+      const htmlLocEl = document.getElementById('contact-location-label');
+      if (htmlLocEl && htmlLocEl.innerText.trim() && htmlLocEl.innerText.trim() !== 'DKI Jakarta, Indonesia') {
+        const customLoc = htmlLocEl.innerText.trim();
+        defaultProfile.lokasiKontak = customLoc;
+        appState.profil.lokasiKontak = customLoc;
+      }
+
       // 1. Tampilkan data dari cache memori lokal terlebih dahulu untuk kecepatan instan
       const cachedData = localStorage.getItem('guru_portfolio_cache');
       if (cachedData && !forceRefresh) {
@@ -1097,6 +1111,9 @@
             // Pertahankan email kustom jika di cache masih berisi email default lama
             if (defaultProfile.emailKontak !== 'budi.prasetyo@sekolah.id' && parsed.profil.emailKontak === 'budi.prasetyo@sekolah.id') {
               appState.profil.emailKontak = defaultProfile.emailKontak;
+            }
+            if (defaultProfile.lokasiKontak !== 'DKI Jakarta, Indonesia' && parsed.profil.lokasiKontak === 'DKI Jakarta, Indonesia') {
+              appState.profil.lokasiKontak = defaultProfile.lokasiKontak;
             }
           }
           if (parsed.riwayat) appState.riwayat = parsed.riwayat;
@@ -1155,7 +1172,8 @@
             biografiLengkap: pRes.data.biografi_lengkap,
             filosofiMengajar: pRes.data.filosofi_mengajar,
             fotoProfilUrl: convertGoogleDriveUrl(pRes.data.foto_profil_url) || appState.profil.fotoProfilUrl,
-            emailKontak: pRes.data.email_kontak || appState.profil.emailKontak
+            emailKontak: pRes.data.email_kontak || appState.profil.emailKontak,
+            lokasiKontak: pRes.data.lokasi_kontak || appState.profil.lokasiKontak
           };
         }
 
@@ -1345,6 +1363,8 @@
       document.getElementById('profile-philosophy').innerText = `"${prof.filosofiMengajar}"`;
       document.getElementById('profile-full-bio').innerText = prof.biografiLengkap;
       document.getElementById('contact-email-label').innerText = prof.emailKontak;
+      const locLabel = document.getElementById('contact-location-label');
+      if (locLabel) locLabel.innerText = prof.lokasiKontak || 'DKI Jakarta, Indonesia';
 
       const publicModules = appState.modulAjar.filter(m => m.statusPublikasi === 'publik');
       document.getElementById('stat-modules-count').innerText = publicModules.length;
@@ -1724,6 +1744,9 @@
       if (document.getElementById('adm-prof-email')) {
         document.getElementById('adm-prof-email').value = prof.emailKontak || '';
       }
+      if (document.getElementById('adm-prof-location')) {
+        document.getElementById('adm-prof-location').value = prof.lokasiKontak || '';
+      }
       document.getElementById('adm-prof-bio').value = prof.biografiSingkat;
       if (document.getElementById('adm-prof-full-bio')) {
         document.getElementById('adm-prof-full-bio').value = prof.biografiLengkap || '';
@@ -1979,6 +2002,7 @@
       const nama_lengkap = document.getElementById('adm-prof-name').value.trim();
       const bidang_keahlian = document.getElementById('adm-prof-subject').value.trim();
       const email_kontak = document.getElementById('adm-prof-email') ? document.getElementById('adm-prof-email').value.trim() : appState.profil.emailKontak;
+      const lokasi_kontak = document.getElementById('adm-prof-location') ? document.getElementById('adm-prof-location').value.trim() : (appState.profil.lokasiKontak || 'DKI Jakarta, Indonesia');
       const biografi_singkat = document.getElementById('adm-prof-bio').value.trim();
       const biografi_lengkap = document.getElementById('adm-prof-full-bio') ? document.getElementById('adm-prof-full-bio').value.trim() : appState.profil.biografiLengkap;
       const filosofi_mengajar = document.getElementById('adm-prof-philosophy').value.trim();
@@ -1992,15 +2016,24 @@
 
       if (supabaseClient) {
         const { data: existingRows } = await supabaseClient.from('profil').select('id').limit(1);
+        let profilePayload = { 
+          nama_lengkap, bidang_keahlian, biografi_singkat, biografi_lengkap, filosofi_mengajar, foto_profil_url, email_kontak, lokasi_kontak
+        };
+
         let result;
         if (existingRows && existingRows.length > 0) {
-          result = await supabaseClient.from('profil').update({ 
-            nama_lengkap, bidang_keahlian, biografi_singkat, biografi_lengkap, filosofi_mengajar, foto_profil_url, email_kontak
-          }).eq('id', existingRows[0].id);
+          result = await supabaseClient.from('profil').update(profilePayload).eq('id', existingRows[0].id);
+          // Jika kolom lokasi_kontak belum ada di tabel Supabase pengguna, fallback simpan tanpa lokasi_kontak
+          if (result && result.error && result.error.message.includes('lokasi_kontak')) {
+            delete profilePayload.lokasi_kontak;
+            result = await supabaseClient.from('profil').update(profilePayload).eq('id', existingRows[0].id);
+          }
         } else {
-          result = await supabaseClient.from('profil').insert([{ 
-            nama_lengkap, bidang_keahlian, biografi_singkat, biografi_lengkap, filosofi_mengajar, foto_profil_url, email_kontak 
-          }]);
+          result = await supabaseClient.from('profil').insert([profilePayload]);
+          if (result && result.error && result.error.message.includes('lokasi_kontak')) {
+            delete profilePayload.lokasi_kontak;
+            result = await supabaseClient.from('profil').insert([profilePayload]);
+          }
         }
 
         if (result && result.error) {
@@ -2009,12 +2042,13 @@
         }
       }
 
-      // Perbarui state lokal secara langsung agar foto dan email tidak pernah revert
+      // Perbarui state lokal secara langsung agar foto, email, dan lokasi tidak pernah revert
       appState.profil = { 
         ...appState.profil, 
         namaLengkap: nama_lengkap, 
         bidangKeahlian: bidang_keahlian, 
         emailKontak: email_kontak,
+        lokasiKontak: lokasi_kontak,
         biografiSingkat: biografi_singkat, 
         biografiLengkap: biografi_lengkap,
         filosofiMengajar: filosofi_mengajar,
