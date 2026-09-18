@@ -1068,6 +1068,8 @@
 
     let activeKaryaFilter = 'semua';
     let isUserClickingMenu = false;
+    let tempModuleCover = '';
+    let currentDownloadUrl = '';
 
     function saveToLocalCache() {
       try {
@@ -1201,7 +1203,9 @@
             volumeNomor: k.volume_nomor,
             doiUrl: k.doi_url,
             deskripsi: k.deskripsi,
-            statusPublikasi: k.status_publikasi
+            statusPublikasi: k.status_publikasi,
+            downloadUrl: k.file_url || k.download_url || '',
+            fotoSampul: convertGoogleDriveUrl(k.foto_sampul) || ''
           }));
         }
 
@@ -1449,6 +1453,13 @@
           </span>
         ` : '';
 
+        const coverBanner = item.fotoSampul ? `
+          <div class="relative h-40 -mx-6 -mt-6 mb-4 overflow-hidden rounded-t-3xl bg-slate-100 border-b border-slate-100">
+            <img src="${item.fotoSampul}" alt="${item.judul}" onerror="handleImageFallback(this, 'general')" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+          </div>
+        ` : '';
+
         const headerSection = isSinta ? `
           <div class="mb-3 space-y-2">
             <div class="flex flex-wrap items-center justify-between gap-1.5">
@@ -1474,8 +1485,9 @@
         `;
 
         return `
-          <div class="bg-white rounded-3xl p-6 border ${isSinta ? (isNonSinta ? 'border-sky-200 hover:border-sky-400' : 'border-amber-200 hover:border-amber-400') : 'border-slate-200'} shadow-sm hover:shadow-md transition-all flex flex-col justify-between group">
+          <div class="bg-white rounded-3xl p-6 border ${isSinta ? (isNonSinta ? 'border-sky-200 hover:border-sky-400' : 'border-amber-200 hover:border-amber-400') : 'border-slate-200'} shadow-sm hover:shadow-md transition-all flex flex-col justify-between group overflow-hidden">
             <div>
+              ${coverBanner}
               ${headerSection}
               <h3 class="text-base font-bold text-slate-900 group-hover:text-brand-600 transition-colors line-clamp-2">${item.judul}</h3>
               ${isSinta && item.volumeNomor ? `<p class="text-[11px] text-slate-400 font-mono mt-1">${item.volumeNomor}</p>` : ''}
@@ -1516,10 +1528,22 @@
       const rank = module.peringkatSinta || 'Artikel Ilmiah';
       const isNonSinta = rank.includes('Non-SINTA') || rank.includes('Prosiding') || rank.includes('ISSN');
 
+      currentDownloadUrl = module.downloadUrl || module.doiUrl || '';
+
       document.getElementById('detail-module-title').innerText = module.judul;
       document.getElementById('detail-module-subject').innerText = module.mataPelajaran;
       document.getElementById('detail-module-grade').innerText = module.jenjangKelas || '-';
       document.getElementById('detail-module-desc').innerText = module.deskripsi;
+
+      // Atur Tampilan Gambar Sampul di Modal Detail
+      const coverWrap = document.getElementById('detail-module-cover-container');
+      const coverImg = document.getElementById('detail-module-cover-img');
+      if (module.fotoSampul) {
+        coverImg.src = module.fotoSampul;
+        coverWrap.classList.remove('hidden');
+      } else {
+        coverWrap.classList.add('hidden');
+      }
 
       const sintaBadge = document.getElementById('detail-module-sinta-badge');
       const sintaText = document.getElementById('detail-module-sinta-text');
@@ -1556,7 +1580,12 @@
     }
 
     function executeDownloadModule() {
-      showToast("Unduhan berkas segera dimulai...", "Mengunduh");
+      if (currentDownloadUrl && currentDownloadUrl.startsWith('http')) {
+        window.open(currentDownloadUrl, '_blank');
+        showToast("Membuka tautan unduhan berkas...", "Mengunduh");
+      } else {
+        showToast("Tautan berkas belum ditambahkan oleh penyusun.", "Informasi", "error");
+      }
       closeModal('modal-module-detail');
     }
 
@@ -2086,8 +2115,62 @@
       document.getElementById('module-subject').value = '';
       document.getElementById('module-grade').value = '';
       document.getElementById('module-desc').value = '';
+      document.getElementById('module-download-url').value = '';
+      document.getElementById('module-cover-url').value = '';
+      document.getElementById('module-cover-file').value = '';
+      document.getElementById('module-cover-preview-wrap').classList.add('hidden');
+      document.getElementById('module-cover-preview').src = '';
+      tempModuleCover = '';
       toggleModuleTypeFields();
       openModal('modal-module');
+    }
+
+    function handleModuleCoverUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const maxDim = 800;
+          let w = img.width, h = img.height;
+          if (w > maxDim || h > maxDim) {
+            if (w > h) {
+              h = Math.round((h * maxDim) / w);
+              w = maxDim;
+            } else {
+              w = Math.round((w * maxDim) / h);
+              h = maxDim;
+            }
+          }
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+
+          tempModuleCover = canvas.toDataURL('image/jpeg', 0.82);
+          document.getElementById('module-cover-preview').src = tempModuleCover;
+          document.getElementById('module-cover-preview-wrap').classList.remove('hidden');
+          document.getElementById('module-cover-url').value = '';
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleModuleCoverUrlInput(e) {
+      const val = e.target.value.trim();
+      if (val) {
+        const converted = convertGoogleDriveUrl(val);
+        tempModuleCover = converted;
+        document.getElementById('module-cover-preview').src = converted;
+        document.getElementById('module-cover-preview-wrap').classList.remove('hidden');
+      } else {
+        tempModuleCover = '';
+        document.getElementById('module-cover-preview-wrap').classList.add('hidden');
+      }
     }
 
     async function handleSaveModule(e) {
@@ -2102,22 +2185,41 @@
       const volumeNomor = tipeKarya === 'sinta' ? document.getElementById('module-volume').value.trim() : null;
       const doiUrl = tipeKarya === 'sinta' ? document.getElementById('module-doi-url').value.trim() : null;
 
+      const rawDownloadUrl = document.getElementById('module-download-url').value.trim();
+      const file_url = convertGoogleDriveUrl(rawDownloadUrl) || '';
+
+      const urlInputCover = document.getElementById('module-cover-url').value.trim();
+      const foto_sampul = tempModuleCover || (urlInputCover ? convertGoogleDriveUrl(urlInputCover) : '');
+
       let newId = 'mod_' + Date.now();
       if (supabaseClient) {
-        const { data, error } = await supabaseClient.from('karya').insert([{
+        let insertPayload = {
           tipe_karya: tipeKarya, judul, mata_pelajaran: mataPelajaran, jenjang_kelas: jenjangKelas, deskripsi,
-          peringkat_sinta: peringkatSinta, nama_jurnal: namaJurnal, volume_nomor: volumeNomor, doi_url: doiUrl, status_publikasi: 'publik'
-        }]).select('id').single();
+          peringkat_sinta: peringkatSinta, nama_jurnal: namaJurnal, volume_nomor: volumeNomor, doi_url: doiUrl, 
+          file_url: file_url, foto_sampul: foto_sampul,
+          status_publikasi: 'publik'
+        };
 
-        if (error) {
+        let { data, error } = await supabaseClient.from('karya').insert([insertPayload]).select('id').single();
+
+        // Penanganan fallback otomatis jika kolom foto_sampul atau file_url belum dijalankan di SQL Editor Supabase
+        if (error && (error.message.includes('foto_sampul') || error.message.includes('file_url'))) {
+          delete insertPayload.foto_sampul;
+          delete insertPayload.file_url;
+          const fallbackRes = await supabaseClient.from('karya').insert([insertPayload]).select('id').single();
+          if (fallbackRes.data && fallbackRes.data.id) newId = fallbackRes.data.id;
+        } else if (error) {
           showToast("Gagal simpan karya: " + error.message, "Gagal Sinkron", "error");
           return;
+        } else if (data && data.id) {
+          newId = data.id;
         }
-        if (data && data.id) newId = data.id;
       }
 
       appState.modulAjar.unshift({
-        id: newId, tipeKarya, judul, mataPelajaran, jenjangKelas, deskripsi, peringkatSinta, namaJurnal, volumeNomor, doiUrl, statusPublikasi: 'publik'
+        id: newId, tipeKarya, judul, mataPelajaran, jenjangKelas, deskripsi, peringkatSinta, namaJurnal, volumeNomor, doiUrl, 
+        downloadUrl: file_url, fotoSampul: foto_sampul,
+        statusPublikasi: 'publik'
       });
 
       closeModal('modal-module');
