@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portofolio Guru Profesional | Rama </title>
+  <title>Portofolio Guru Profesional | Rama</title>
   
   <!-- Font Inter Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -80,7 +80,12 @@
       }
 
       if (type === 'profile') {
-        imgEl.src = 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&auto=format&fit=crop&q=80';
+        imgEl.classList.add('hidden');
+        const placeholder = document.getElementById('hero-photo-placeholder');
+        if (placeholder) placeholder.classList.remove('hidden');
+        const admPlaceholder = document.getElementById('adm-prof-photo-placeholder');
+        if (admPlaceholder) admPlaceholder.classList.remove('hidden');
+        return;
       } else if (type === 'cert') {
         imgEl.src = 'https://images.unsplash.com/photo-1589330694653-dad6ef49ca60?w=800&auto=format&fit=crop&q=80';
       } else {
@@ -244,8 +249,12 @@
 
                 <div class="absolute w-72 h-72 sm:w-80 sm:h-80 bg-gradient-to-tr from-brand-600 to-sky-500 hero-blob shadow-2xl shadow-brand-500/30"></div>
 
-                <div class="relative z-10 w-72 sm:w-80 h-84 sm:h-[410px] flex items-end justify-center pointer-events-none">
-                  <img id="hero-photo" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&auto=format&fit=crop&q=80" alt="Foto Profil Guru" onerror="handleImageFallback(this, 'profile')" class="w-full h-full object-contain object-bottom drop-shadow-2xl select-none transition-all duration-300">
+                <div class="relative z-10 w-72 sm:w-80 h-84 sm:h-[410px] flex items-center justify-center pointer-events-none">
+                  <img id="hero-photo" src="" alt="Foto Profil Guru" onerror="handleImageFallback(this, 'profile')" class="w-full h-full object-contain object-bottom drop-shadow-2xl select-none transition-all duration-300 hidden">
+                  <div id="hero-photo-placeholder" class="w-48 h-48 sm:w-56 sm:h-56 rounded-full bg-white/15 backdrop-blur-sm border border-white/30 flex flex-col items-center justify-center text-white shadow-xl">
+                    <i class="fa-solid fa-user-graduate text-6xl sm:text-7xl opacity-80"></i>
+                    <span class="text-xs font-semibold mt-3 tracking-wider uppercase opacity-90">Foto Profil Guru</span>
+                  </div>
                 </div>
 
                 <div class="absolute left-0 sm:-left-4 top-16 z-20 animate-float-slow">
@@ -551,8 +560,12 @@
                   <div class="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center">
                     <div class="sm:col-span-4 flex flex-col items-center justify-center p-4 bg-white rounded-2xl border border-slate-200 shadow-sm">
                       <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Foto Aktif Saat Ini</span>
-                      <div class="w-28 h-28 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 flex items-center justify-center">
-                        <img id="adm-prof-photo-preview" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&auto=format&fit=crop&q=80" alt="Pratinjau Foto" onerror="handleImageFallback(this, 'profile')" class="w-full h-full object-cover">
+                      <div class="w-28 h-28 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 flex items-center justify-center relative">
+                        <img id="adm-prof-photo-preview" src="" alt="Pratinjau Foto" onerror="handleImageFallback(this, 'profile')" class="w-full h-full object-cover hidden">
+                        <div id="adm-prof-photo-placeholder" class="w-full h-full flex flex-col items-center justify-center text-slate-400 bg-slate-50">
+                          <i class="fa-solid fa-user-graduate text-3xl mb-1 text-slate-300"></i>
+                          <span class="text-[9px] font-medium text-slate-400">Belum Ada Foto</span>
+                        </div>
                       </div>
                     </div>
                     <div class="sm:col-span-8 space-y-3">
@@ -1113,6 +1126,14 @@
       lokasiKontak: 'Pelalawan, Pangkalan Kerinci, Indonesia'
     };
 
+    function isStockDefaultPhoto(url) {
+      if (!url || typeof url !== 'string') return true;
+      const lower = url.toLowerCase();
+      return lower.includes('1573496359142') || 
+             lower.includes('teacher_png62451') || 
+             lower.includes('ui-avatars.com');
+    }
+
     // 1. HIDRASI INSTAN SINKRON DARI CACHE (Mencegah Kedipan Profil Lama)
     let initialProfile = { ...defaultProfile };
     let initialRiwayat = [];
@@ -1125,6 +1146,9 @@
       try {
         const parsed = JSON.parse(cachedData);
         if (parsed.profil) {
+          if (isStockDefaultPhoto(parsed.profil.fotoProfilUrl)) {
+            parsed.profil.fotoProfilUrl = '';
+          }
           initialProfile = { ...defaultProfile, ...parsed.profil };
         }
         if (parsed.riwayat) initialRiwayat = parsed.riwayat;
@@ -1220,6 +1244,11 @@
         const [pRes, rRes, kRes, sRes, gRes] = await Promise.race([fetchPromise, timeoutPromise]);
 
         if (pRes && pRes.data) {
+          let fetchedPhoto = convertGoogleDriveUrl(pRes.data.foto_profil_url) || '';
+          if (isStockDefaultPhoto(fetchedPhoto)) {
+            fetchedPhoto = '';
+          }
+
           appState.profil = {
             id: pRes.data.id,
             namaLengkap: pRes.data.nama_lengkap,
@@ -1227,7 +1256,7 @@
             biografiSingkat: pRes.data.biografi_singkat,
             biografiLengkap: pRes.data.biografi_lengkap,
             filosofiMengajar: pRes.data.filosofi_mengajar,
-            fotoProfilUrl: convertGoogleDriveUrl(pRes.data.foto_profil_url) || appState.profil.fotoProfilUrl,
+            fotoProfilUrl: fetchedPhoto,
             emailKontak: pRes.data.email_kontak || appState.profil.emailKontak,
             lokasiKontak: pRes.data.lokasi_kontak || appState.profil.lokasiKontak
           };
@@ -1425,7 +1454,18 @@
       if (heroBio) heroBio.innerText = prof.biografiSingkat;
       
       const heroPhoto = document.getElementById('hero-photo');
-      if (heroPhoto && prof.fotoProfilUrl) heroPhoto.src = prof.fotoProfilUrl;
+      const heroPlaceholder = document.getElementById('hero-photo-placeholder');
+      if (heroPhoto) {
+        if (prof.fotoProfilUrl && !isStockDefaultPhoto(prof.fotoProfilUrl)) {
+          heroPhoto.src = prof.fotoProfilUrl;
+          heroPhoto.classList.remove('hidden');
+          if (heroPlaceholder) heroPlaceholder.classList.add('hidden');
+        } else {
+          heroPhoto.src = '';
+          heroPhoto.classList.add('hidden');
+          if (heroPlaceholder) heroPlaceholder.classList.remove('hidden');
+        }
+      }
       
       const heroBadge = document.getElementById('hero-name-badge');
       if (heroBadge) heroBadge.innerText = prof.namaLengkap;
@@ -1899,9 +1939,23 @@
       }
       document.getElementById('adm-prof-philosophy').value = prof.filosofiMengajar;
       if (document.getElementById('adm-prof-photo-url')) {
-        document.getElementById('adm-prof-photo-url').value = prof.fotoProfilUrl || '';
+        document.getElementById('adm-prof-photo-url').value = isStockDefaultPhoto(prof.fotoProfilUrl) ? '' : (prof.fotoProfilUrl || '');
       }
-      document.getElementById('adm-prof-photo-preview').src = prof.fotoProfilUrl;
+
+      const admPreview = document.getElementById('adm-prof-photo-preview');
+      const admPlaceholder = document.getElementById('adm-prof-photo-placeholder');
+      if (admPreview) {
+        if (prof.fotoProfilUrl && !isStockDefaultPhoto(prof.fotoProfilUrl)) {
+          admPreview.src = prof.fotoProfilUrl;
+          admPreview.classList.remove('hidden');
+          if (admPlaceholder) admPlaceholder.classList.add('hidden');
+        } else {
+          admPreview.src = '';
+          admPreview.classList.add('hidden');
+          if (admPlaceholder) admPlaceholder.classList.remove('hidden');
+        }
+      }
+
       document.getElementById('adm-account-email').value = appState.auth.currentUser.email;
 
       renderAdminCareerTable();
@@ -2119,8 +2173,23 @@
 
           const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.85);
           appState.profil.fotoProfilUrl = compressedDataUrl;
-          document.getElementById('hero-photo').src = compressedDataUrl;
-          document.getElementById('adm-prof-photo-preview').src = compressedDataUrl;
+          
+          const hero = document.getElementById('hero-photo');
+          const heroPl = document.getElementById('hero-photo-placeholder');
+          if (hero) {
+            hero.src = compressedDataUrl;
+            hero.classList.remove('hidden');
+            if (heroPl) heroPl.classList.add('hidden');
+          }
+
+          const admPrev = document.getElementById('adm-prof-photo-preview');
+          const admPl = document.getElementById('adm-prof-photo-placeholder');
+          if (admPrev) {
+            admPrev.src = compressedDataUrl;
+            admPrev.classList.remove('hidden');
+            if (admPl) admPl.classList.add('hidden');
+          }
+
           if (document.getElementById('adm-prof-photo-url')) {
             document.getElementById('adm-prof-photo-url').value = '';
           }
@@ -2133,13 +2202,36 @@
 
     function handlePhotoUrlInput(e) {
       const rawUrl = e.target.value.trim();
+      const hero = document.getElementById('hero-photo');
+      const heroPl = document.getElementById('hero-photo-placeholder');
+      const preview = document.getElementById('adm-prof-photo-preview');
+      const admPl = document.getElementById('adm-prof-photo-placeholder');
+
       if (rawUrl) {
         const converted = convertGoogleDriveUrl(rawUrl);
         appState.profil.fotoProfilUrl = converted;
-        const hero = document.getElementById('hero-photo');
-        const preview = document.getElementById('adm-prof-photo-preview');
-        if (hero) hero.src = converted;
-        if (preview) preview.src = converted;
+        if (hero) {
+          hero.src = converted;
+          hero.classList.remove('hidden');
+          if (heroPl) heroPl.classList.add('hidden');
+        }
+        if (preview) {
+          preview.src = converted;
+          preview.classList.remove('hidden');
+          if (admPl) admPl.classList.add('hidden');
+        }
+      } else {
+        appState.profil.fotoProfilUrl = '';
+        if (hero) {
+          hero.src = '';
+          hero.classList.add('hidden');
+          if (heroPl) heroPl.classList.remove('hidden');
+        }
+        if (preview) {
+          preview.src = '';
+          preview.classList.add('hidden');
+          if (admPl) admPl.classList.remove('hidden');
+        }
       }
     }
 
