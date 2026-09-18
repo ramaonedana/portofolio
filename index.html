@@ -202,7 +202,7 @@
                 <div class="absolute w-72 h-72 sm:w-80 sm:h-80 bg-gradient-to-tr from-brand-600 to-sky-500 hero-blob shadow-2xl shadow-brand-500/30"></div>
 
                 <div class="relative z-10 w-72 sm:w-80 h-84 sm:h-[410px] flex items-end justify-center pointer-events-none">
-                  <img id="hero-photo" src="https://pngimg.com/d/teacher_PNG62451.png" alt="Foto Profil Guru" class="w-full h-full object-contain object-bottom drop-shadow-2xl select-none transition-all duration-300" onerror="this.src='https://pngimg.com/d/teacher_PNG62451.png'">
+                  <img id="hero-photo" src="https://pngimg.com/d/teacher_PNG62451.png" alt="Foto Profil Guru" class="w-full h-full object-contain object-bottom drop-shadow-2xl select-none transition-all duration-300">
                 </div>
 
                 <div class="absolute left-0 sm:-left-4 top-16 z-20 animate-float-slow">
@@ -348,7 +348,7 @@
           </button>
         </div>
 
-        <!-- Grid Karya Publik -->
+        <!-- Grid Karya Publik (Ukuran MB/KB dihilangkan, rapi dan adaptif) -->
         <div id="grid-public-modules" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
 
         <div id="empty-module-search" class="hidden text-center py-12 bg-white rounded-3xl border border-dashed border-slate-300 p-8">
@@ -432,7 +432,6 @@
 
     </div>
 
-    <!-- ==================== VIEW 2: ADMIN CMS DASHBOARD ==================== -->
     <div id="view-admin" class="hidden min-h-[calc(100vh-4rem)] bg-slate-100 py-8">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -458,6 +457,7 @@
           </div>
         </div>
 
+        <!-- Admin Tab Navigation -->
         <div class="flex border-b border-slate-200 bg-white rounded-t-2xl px-4 pt-2 gap-2 overflow-x-auto">
           <button onclick="setAdminTab('tab-profile')" id="btn-tab-profile" class="admin-tab-btn py-3 px-4 font-semibold text-xs sm:text-sm border-b-2 border-brand-600 text-brand-600 flex items-center gap-2 whitespace-nowrap">
             <i class="fa-solid fa-id-card"></i> Profil &amp; Karir
@@ -500,7 +500,7 @@
                     <div class="sm:col-span-4 flex flex-col items-center justify-center p-4 bg-white rounded-2xl border border-slate-200 shadow-sm">
                       <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Foto Aktif Saat Ini</span>
                       <div class="w-28 h-28 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 flex items-center justify-center">
-                        <img id="adm-prof-photo-preview" src="https://pngimg.com/d/teacher_PNG62451.png" alt="Pratinjau Foto" class="w-full h-full object-cover" onerror="this.src='https://pngimg.com/d/teacher_PNG62451.png'">
+                        <img id="adm-prof-photo-preview" src="https://pngimg.com/d/teacher_PNG62451.png" alt="Pratinjau Foto" class="w-full h-full object-cover">
                       </div>
                     </div>
                     <div class="sm:col-span-8 space-y-3">
@@ -510,9 +510,8 @@
                         <input type="file" id="adm-prof-file-input" accept="image/*" onchange="handleProfilePhotoUpload(event)" class="hidden">
                       </label>
                       <div>
-                        <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Atau Masukkan Tautan URL Foto (Mendukung Link Google Drive)</label>
-                        <input type="url" id="adm-prof-photo-url" oninput="handlePhotoUrlInput(event)" placeholder="https://drive.google.com/... atau https://..." class="w-full px-3 py-2 border rounded-xl text-xs bg-white">
-                        <p class="text-[10px] text-slate-400 mt-1"><i class="fa-solid fa-circle-info mr-1"></i>Link Google Drive akan otomatis dikonversi ke gambar langsung. Pastikan akses Google Drive disetel ke "Siapa saja yang memiliki link".</p>
+                        <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Atau Masukkan Tautan URL Foto</label>
+                        <input type="url" id="adm-prof-photo-url" oninput="handlePhotoUrlInput(event)" placeholder="https://..." class="w-full px-3 py-1.5 border rounded-xl text-xs bg-white">
                       </div>
                     </div>
                   </div>
@@ -538,25 +537,13 @@
 
             <div class="pt-8 border-t border-slate-200">
               <div class="flex items-center justify-between mb-4">
-                <div>
-                  <h3 class="font-bold text-slate-900">Riwayat Pendidikan &amp; Pengalaman Kerja</h3>
-                  <p class="text-xs text-slate-500">Kelola jejak karir dan pendidikan formal Anda.</p>
-                </div>
-                <button onclick="openModalCareerItem()" class="px-3.5 py-2 rounded-xl bg-brand-50 hover:bg-brand-100 text-brand-700 font-semibold text-xs flex items-center gap-1.5 transition-colors">
+                <h3 class="font-bold text-slate-900">Riwayat Pendidikan &amp; Pengalaman Kerja</h3>
+                <button onclick="openModalCareerItem()" class="px-3 py-1.5 rounded-xl bg-brand-50 text-brand-700 font-semibold text-xs flex items-center gap-1">
                   <i class="fa-solid fa-plus"></i> Tambah Riwayat
                 </button>
               </div>
               <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs sm:text-sm">
-                  <thead class="bg-slate-50 text-slate-600 font-semibold uppercase text-[11px]">
-                    <tr>
-                      <th class="p-3">Tipe</th>
-                      <th class="p-3">Institusi</th>
-                      <th class="p-3">Peran / Gelar</th>
-                      <th class="p-3">Periode</th>
-                      <th class="p-3 text-right">Tindakan</th>
-                    </tr>
-                  </thead>
                   <tbody id="adm-career-tbody" class="divide-y divide-slate-100"></tbody>
                 </table>
               </div>
@@ -608,10 +595,7 @@
           <!-- TAB 4: GALERI -->
           <div id="tab-gallery" class="admin-tab-panel hidden space-y-6">
             <div class="flex justify-between items-center pb-4 border-b border-slate-100">
-              <div>
-                <h2 class="text-lg font-bold text-slate-900">Dokumentasi Pembelajaran</h2>
-                <p class="text-xs text-slate-500">Mendukung link Google Drive, foto web, dan deskripsi kegiatan.</p>
-              </div>
+              <h2 class="text-lg font-bold text-slate-900">Dokumentasi Pembelajaran</h2>
               <button onclick="openModalGallery()" class="px-4 py-2 rounded-xl bg-brand-600 text-white hover:bg-brand-700 text-xs font-semibold flex items-center gap-2">
                 <i class="fa-solid fa-plus"></i> Tambah Foto Kegiatan
               </button>
@@ -750,7 +734,7 @@
     </div>
   </div>
 
-  <!-- Modal Tambah / Edit Karya -->
+  <!-- Modal Tambah Karya -->
   <div id="modal-module" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
     <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative my-8">
       <button onclick="closeModal('modal-module')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -820,7 +804,7 @@
     </div>
   </div>
 
-  <!-- Modal Tambah / Edit Sertifikasi -->
+  <!-- Modal Tambah Sertifikasi -->
   <div id="modal-cert" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative max-h-[90vh] overflow-y-auto">
       <button onclick="closeModal('modal-cert')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -851,8 +835,8 @@
           <input type="text" id="cert-issuer" required placeholder="Kemendikbudristek RI" class="w-full px-3.5 py-2 border rounded-xl text-sm">
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">URL Foto Bukti Sertifikat (Bisa Link Google Drive)</label>
-          <input type="url" id="cert-photo-url" placeholder="https://..." class="w-full px-3.5 py-2 border rounded-xl text-sm">
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">URL Foto Bukti Sertifikat</label>
+          <input type="url" id="cert-photo-url" placeholder="https://images.unsplash.com/..." class="w-full px-3.5 py-2 border rounded-xl text-sm">
         </div>
         <div class="flex justify-end gap-3 pt-3">
           <button type="button" onclick="closeModal('modal-cert')" class="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 text-xs font-semibold">Batal</button>
@@ -862,7 +846,7 @@
     </div>
   </div>
 
-  <!-- Modal Tambah / Edit Galeri dengan Deskripsi Singkat -->
+  <!-- Modal Tambah Galeri -->
   <div id="modal-gallery" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative">
       <button onclick="closeModal('modal-gallery')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -871,20 +855,15 @@
         <input type="hidden" id="gallery-id">
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Judul Kegiatan *</label>
-          <input type="text" id="gallery-title" required placeholder="Contoh: Praktik Sains Robotik" class="w-full px-3.5 py-2 border rounded-xl text-sm">
+          <input type="text" id="gallery-title" required placeholder="Judul kegiatan" class="w-full px-3.5 py-2 border rounded-xl text-sm">
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tanggal *</label>
           <input type="text" id="gallery-date" required placeholder="14 Maret 2024" class="w-full px-3.5 py-2 border rounded-xl text-sm">
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">URL Foto (Mendukung Link Google Drive) *</label>
-          <input type="url" id="gallery-image-url" required placeholder="https://drive.google.com/... atau https://..." class="w-full px-3.5 py-2 border rounded-xl text-sm">
-          <p class="text-[10px] text-slate-400 mt-1"><i class="fa-solid fa-circle-info mr-1"></i>Link Google Drive akan otomatis dikonversi. Pastikan akses Google Drive disetel ke "Siapa saja yang memiliki link".</p>
-        </div>
-        <div>
-          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Deskripsi Singkat Kegiatan</label>
-          <textarea id="gallery-desc" rows="2" placeholder="Tuliskan deskripsi ringkas tentang aktivitas ini..." class="w-full px-3.5 py-2 border rounded-xl text-sm"></textarea>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">URL Foto *</label>
+          <input type="url" id="gallery-image-url" required placeholder="https://..." class="w-full px-3.5 py-2 border rounded-xl text-sm">
         </div>
         <div class="flex justify-end gap-3 pt-3">
           <button type="button" onclick="closeModal('modal-gallery')" class="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 text-xs font-semibold">Batal</button>
@@ -894,7 +873,7 @@
     </div>
   </div>
 
-  <!-- Modal Tambah & Edit Riwayat Karir -->
+  <!-- Modal Tambah Riwayat -->
   <div id="modal-career" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative">
       <button onclick="closeModal('modal-career')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -909,30 +888,26 @@
           </select>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Institusi / Sekolah *</label>
-          <input type="text" id="career-institution" required placeholder="Nama institusi / universitas" class="w-full px-3.5 py-2 border rounded-xl text-sm">
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Institusi / Sekolah</label>
+          <input type="text" id="career-institution" required placeholder="Nama institusi" class="w-full px-3.5 py-2 border rounded-xl text-sm">
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Gelar / Peran *</label>
-          <input type="text" id="career-role" required placeholder="Gelar akademik atau jabatan mengajar" class="w-full px-3.5 py-2 border rounded-xl text-sm">
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Gelar / Peran</label>
+          <input type="text" id="career-role" required placeholder="Gelar atau posisi" class="w-full px-3.5 py-2 border rounded-xl text-sm">
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tahun Mulai *</label>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tahun Mulai</label>
             <input type="text" id="career-year-start" placeholder="2018" class="w-full px-3.5 py-2 border rounded-xl text-sm" required>
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tahun Selesai *</label>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tahun Selesai</label>
             <input type="text" id="career-year-end" placeholder="2022 / Sekarang" class="w-full px-3.5 py-2 border rounded-xl text-sm" required>
           </div>
         </div>
-        <div>
-          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Uraian / Catatan Tambahan (Opsional)</label>
-          <textarea id="career-desc" rows="2" placeholder="Fokus kajian, prestasi, atau capaian peran..." class="w-full px-3.5 py-2 border rounded-xl text-sm"></textarea>
-        </div>
         <div class="flex justify-end gap-3 pt-3">
           <button type="button" onclick="closeModal('modal-career')" class="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 text-xs font-semibold">Batal</button>
-          <button type="submit" class="px-5 py-2 rounded-xl bg-brand-600 text-white hover:bg-brand-700 text-xs font-semibold">Simpan Riwayat</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-brand-600 text-white hover:bg-brand-700 text-xs font-semibold">Simpan</button>
         </div>
       </form>
     </div>
@@ -960,7 +935,7 @@
     </div>
   </div>
 
-  <!-- Modal Konfirmasi Hapus Kustom -->
+  <!-- Modal Konfirmasi Hapus Kustom (Pengganti confirm bawaan) -->
   <div id="modal-confirm-delete" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-100 text-center">
       <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center mx-auto mb-3">
@@ -1023,36 +998,7 @@
     let activeKaryaFilter = 'semua';
     let isUserClickingMenu = false;
 
-    // =========================================================================
-    // FUNGSI KONVERTER LINK GOOGLE DRIVE KE STREAM GAMBAR LANGSUNG
-    // =========================================================================
-    function formatGoogleDriveUrl(url) {
-      if (!url || typeof url !== 'string') return url;
-      const trimmed = url.trim();
-      
-      // Jika link berasal dari Google Drive
-      if (trimmed.includes('drive.google.com')) {
-        let fileId = '';
-        // Format 1: /file/d/FILE_ID/view...
-        const match1 = trimmed.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-        if (match1 && match1[1]) {
-          fileId = match1[1];
-        } else {
-          // Format 2: id=FILE_ID
-          const match2 = trimmed.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-          if (match2 && match2[1]) {
-            fileId = match2[1];
-          }
-        }
-        
-        if (fileId) {
-          // Menggunakan CDN Google lh3 langsung yang bebas blokir CORS dan pratinjau browser
-          return `https://lh3.googleusercontent.com/d/${fileId}`;
-        }
-      }
-      return trimmed;
-    }
-
+    // Logika Ketukan Rahasia Pada Logo Guru (Klik 3x santai)
     let secretLogoClicks = 0;
     let secretLogoTimeout = null;
 
@@ -1096,7 +1042,7 @@
           { id: 'cert_2', judulPenghargaan: 'Google Certified Educator Level 2', kategori: 'Pelatihan Nasional', institusiPenerbit: 'Google for Education', tahunPerolehan: '2022', fotoSertifikatUrl: 'https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=800&auto=format&fit=crop&q=80' }
         ];
         appState.galeri = [
-          { id: 'gal_1', judulKegiatan: 'Eksplorasi Praktik Pemodelan Roket Air', tanggal: '12 Februari 2024', fotoUrl: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&auto=format&fit=crop&q=80', deskripsi: 'Aktivitas pembuatan dan peluncuran roket air memanfaatkan prinsip tekanan fluida dan kalkulasi sudut parabola.' }
+          { id: 'gal_1', judulKegiatan: 'Eksplorasi Praktik Pemodelan Roket Air', tanggal: '12 Februari 2024', fotoUrl: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&auto=format&fit=crop&q=80' }
         ];
         renderPublicView();
         return;
@@ -1112,7 +1058,7 @@
             biografiSingkat: pData.biografi_singkat,
             biografiLengkap: pData.biografi_lengkap,
             filosofiMengajar: pData.filosofi_mengajar,
-            fotoProfilUrl: formatGoogleDriveUrl(pData.foto_profil_url) || appState.profil.fotoProfilUrl,
+            fotoProfilUrl: pData.foto_profil_url || appState.profil.fotoProfilUrl,
             emailKontak: pData.email_kontak
           };
         }
@@ -1155,7 +1101,7 @@
             kategori: s.kategori,
             institusiPenerbit: s.institusi_penerbit,
             tahunPerolehan: s.tahun_perolehan,
-            fotoSertifikatUrl: formatGoogleDriveUrl(s.foto_sertifikat_url)
+            fotoSertifikatUrl: s.foto_sertifikat_url
           }));
         }
 
@@ -1165,8 +1111,7 @@
             id: g.id,
             judulKegiatan: g.judul_kegiatan,
             tanggal: g.tanggal,
-            fotoUrl: formatGoogleDriveUrl(g.foto_url),
-            deskripsi: g.deskripsi || ''
+            fotoUrl: g.foto_url
           }));
         }
 
@@ -1180,6 +1125,7 @@
       }
     }
 
+    // Penanda Menu Aktif
     function updateMenuIndicator(targetId) {
       document.querySelectorAll('.nav-link-item').forEach(item => {
         if (item.getAttribute('data-target') === targetId) {
@@ -1304,7 +1250,7 @@
       document.getElementById('footer-teacher-name').innerText = prof.namaLengkap;
       document.getElementById('footer-year').innerText = new Date().getFullYear();
       document.getElementById('hero-bio').innerText = prof.biografiSingkat;
-      document.getElementById('hero-photo').src = formatGoogleDriveUrl(prof.fotoProfilUrl);
+      document.getElementById('hero-photo').src = prof.fotoProfilUrl;
       document.getElementById('hero-name-badge').innerText = prof.namaLengkap;
       document.getElementById('profile-philosophy').innerText = `"${prof.filosofiMengajar}"`;
       document.getElementById('profile-full-bio').innerText = prof.biografiLengkap;
@@ -1506,12 +1452,10 @@
 
     function renderPublicCertifications() {
       const container = document.getElementById('grid-public-certifications');
-      container.innerHTML = appState.sertifikasi.map(cert => {
-        const directImgUrl = formatGoogleDriveUrl(cert.fotoSertifikatUrl);
-        return `
+      container.innerHTML = appState.sertifikasi.map(cert => `
         <div class="bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
           <div class="relative h-48 w-full bg-slate-100 overflow-hidden cursor-pointer" onclick="openCertLightbox('${cert.id}')">
-            <img src="${directImgUrl}" alt="${cert.judulPenghargaan}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/800x600/e2e8f0/475569?text=Sertifikat'">
+            <img src="${cert.fotoSertifikatUrl}" alt="${cert.judulPenghargaan}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
             <div class="absolute top-3 left-3">
               <span class="text-[11px] font-bold px-3 py-1 rounded-full shadow-sm backdrop-blur-md bg-indigo-50 text-indigo-700 border border-indigo-200">
                 ${cert.kategori}
@@ -1530,8 +1474,7 @@
             </button>
           </div>
         </div>
-      `;
-      }).join('') || '<p class="text-xs text-slate-400 col-span-3 text-center py-8">Belum ada sertifikasi.</p>';
+      `).join('') || '<p class="text-xs text-slate-400 col-span-3 text-center py-8">Belum ada sertifikasi.</p>';
     }
 
     function openCertLightbox(id) {
@@ -1540,32 +1483,25 @@
       document.getElementById('lightbox-cert-title').innerText = cert.judulPenghargaan;
       document.getElementById('lightbox-cert-cat').innerText = cert.kategori;
       document.getElementById('lightbox-cert-issuer').innerText = `${cert.institusiPenerbit} • Tahun ${cert.tahunPerolehan}`;
-      document.getElementById('lightbox-cert-img').src = formatGoogleDriveUrl(cert.fotoSertifikatUrl);
+      document.getElementById('lightbox-cert-img').src = cert.fotoSertifikatUrl;
       openModal('modal-cert-lightbox');
     }
 
-    // Render Galeri Publik dengan Deskripsi Singkat
     function renderPublicGallery() {
       const container = document.getElementById('grid-public-gallery');
-      container.innerHTML = appState.galeri.map(gal => {
-        const directImgUrl = formatGoogleDriveUrl(gal.fotoUrl);
-        return `
-        <div class="bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between">
-          <div>
-            <div class="relative overflow-hidden h-48 bg-slate-100">
-              <img src="${directImgUrl}" alt="${gal.judulKegiatan}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/600x400/e2e8f0/475569?text=Dokumentasi+Kelas'">
-              <span class="absolute bottom-3 left-3 bg-slate-900/80 backdrop-blur-sm text-white text-[11px] font-semibold px-2.5 py-1 rounded-lg">
-                <i class="fa-regular fa-calendar mr-1"></i> ${gal.tanggal}
-              </span>
-            </div>
-            <div class="p-5">
-              <h4 class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition-colors leading-snug">${gal.judulKegiatan}</h4>
-              ${gal.deskripsi ? `<p class="text-xs text-slate-500 mt-2 leading-relaxed line-clamp-3">${gal.deskripsi}</p>` : ''}
-            </div>
+      container.innerHTML = appState.galeri.map(gal => `
+        <div class="bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-sm group">
+          <div class="relative overflow-hidden h-48 bg-slate-100">
+            <img src="${gal.fotoUrl}" alt="${gal.judulKegiatan}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute bottom-3 left-3 bg-slate-900/80 backdrop-blur-sm text-white text-[11px] font-semibold px-2.5 py-1 rounded-lg">
+              ${gal.tanggal}
+            </span>
+          </div>
+          <div class="p-5">
+            <h4 class="font-bold text-sm text-slate-900">${gal.judulKegiatan}</h4>
           </div>
         </div>
-      `;
-      }).join('') || '<p class="text-xs text-slate-400 col-span-3 text-center py-8">Belum ada foto kegiatan.</p>';
+      `).join('') || '<p class="text-xs text-slate-400 col-span-3 text-center py-8">Belum ada foto kegiatan.</p>';
     }
 
     async function handleSendPublicMessage(e) {
@@ -1649,7 +1585,7 @@
       if (document.getElementById('adm-prof-photo-url')) {
         document.getElementById('adm-prof-photo-url').value = prof.fotoProfilUrl || '';
       }
-      document.getElementById('adm-prof-photo-preview').src = formatGoogleDriveUrl(prof.fotoProfilUrl);
+      document.getElementById('adm-prof-photo-preview').src = prof.fotoProfilUrl;
       document.getElementById('adm-account-email').value = appState.auth.currentUser.email;
 
       renderAdminCareerTable();
@@ -1662,7 +1598,7 @@
           <td class="p-3 text-slate-600">${mod.namaJurnal || mod.mataPelajaran}</td>
           <td class="p-3"><span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-100 text-emerald-800">Publik</span></td>
           <td class="p-3 text-right">
-            <button onclick="confirmDeleteModule('${mod.id}')" class="p-1.5 text-slate-500 hover:text-rose-600" title="Hapus Karya"><i class="fa-solid fa-trash-can"></i></button>
+            <button onclick="confirmDeleteModule('${mod.id}')" class="p-1.5 text-slate-500 hover:text-rose-600"><i class="fa-solid fa-trash-can"></i></button>
           </td>
         </tr>
       `).join('') || '<tr><td colspan="5" class="p-4 text-center text-slate-400">Belum ada karya.</td></tr>';
@@ -1671,14 +1607,14 @@
       certTbody.innerHTML = appState.sertifikasi.map(cert => `
         <tr class="hover:bg-slate-50 transition-colors">
           <td class="p-3 font-semibold text-slate-900 flex items-center gap-3">
-            <img src="${formatGoogleDriveUrl(cert.fotoSertifikatUrl)}" class="w-12 h-9 rounded object-cover border" onerror="this.src='https://placehold.co/100x80/e2e8f0/475569?text=Doc'">
+            <img src="${cert.fotoSertifikatUrl}" class="w-12 h-9 rounded object-cover border">
             <span>${cert.judulPenghargaan}</span>
           </td>
           <td class="p-3 text-slate-600">${cert.kategori}</td>
           <td class="p-3 text-slate-600">${cert.institusiPenerbit}</td>
           <td class="p-3 text-slate-500">${cert.tahunPerolehan}</td>
           <td class="p-3 text-right">
-            <button onclick="confirmDeleteCert('${cert.id}')" class="p-1.5 text-slate-500 hover:text-rose-600" title="Hapus Sertifikat"><i class="fa-solid fa-trash-can"></i></button>
+            <button onclick="confirmDeleteCert('${cert.id}')" class="p-1.5 text-slate-500 hover:text-rose-600"><i class="fa-solid fa-trash-can"></i></button>
           </td>
         </tr>
       `).join('') || '<tr><td colspan="5" class="p-4 text-center text-slate-400">Belum ada sertifikasi.</td></tr>';
@@ -1686,20 +1622,13 @@
       const galContainer = document.getElementById('adm-gallery-grid');
       galContainer.innerHTML = appState.galeri.map(gal => `
         <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 flex flex-col justify-between">
-          <div class="relative overflow-hidden rounded-xl h-32 bg-slate-200 mb-2">
-            <img src="${formatGoogleDriveUrl(gal.fotoUrl)}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/600x400/e2e8f0/475569?text=Dokumentasi'">
-          </div>
-          <div>
-            <h4 class="font-bold text-xs text-slate-800 line-clamp-1">${gal.judulKegiatan}</h4>
-            <span class="text-[10px] text-slate-400 block">${gal.tanggal}</span>
-            ${gal.deskripsi ? `<p class="text-[11px] text-slate-500 mt-1 line-clamp-2">${gal.deskripsi}</p>` : ''}
-          </div>
-          <div class="pt-2 mt-2 border-t flex justify-end gap-1">
-            <button onclick="openModalGallery('${gal.id}')" class="p-1.5 text-slate-500 hover:text-brand-600 text-xs" title="Edit Foto Kegiatan"><i class="fa-solid fa-pen-to-square"></i></button>
-            <button onclick="deleteGallery('${gal.id}')" class="p-1.5 text-rose-600 hover:text-rose-700 text-xs" title="Hapus Foto Kegiatan"><i class="fa-solid fa-trash-can"></i></button>
+          <img src="${gal.fotoUrl}" class="w-full h-32 object-cover rounded-xl mb-2">
+          <h4 class="font-bold text-xs text-slate-800">${gal.judulKegiatan}</h4>
+          <div class="pt-2 mt-2 border-t flex justify-end">
+            <button onclick="deleteGallery('${gal.id}')" class="p-1 text-rose-600"><i class="fa-solid fa-trash-can text-xs"></i></button>
           </div>
         </div>
-      `).join('') || '<p class="text-xs text-slate-400 col-span-4 text-center py-6">Belum ada foto kegiatan.</p>';
+      `).join('') || '<p class="text-xs text-slate-400 col-span-4 text-center py-6">Belum ada foto.</p>';
 
       const msgBox = document.getElementById('adm-messages-container');
       msgBox.innerHTML = appState.pesanKontak.map(m => `
@@ -1720,46 +1649,21 @@
           <td class="p-3"><span class="capitalize px-2 py-0.5 rounded text-[11px] font-bold ${item.tipe === 'pendidikan' ? 'bg-brand-50 text-brand-700' : 'bg-indigo-50 text-indigo-700'}">${item.tipe}</span></td>
           <td class="p-3 font-semibold text-slate-800">${item.institusi}</td>
           <td class="p-3 text-slate-600">${item.peranAtauGelar}</td>
-          <td class="p-3 text-slate-500 whitespace-nowrap">${item.tahunMulai} — ${item.tahunSelesai}</td>
-          <td class="p-3 text-right whitespace-nowrap">
-            <button onclick="openModalCareerItem('${item.id}')" class="p-1.5 text-slate-500 hover:text-brand-600 transition-colors mr-1" title="Edit Riwayat">
-              <i class="fa-solid fa-pen-to-square"></i>
-            </button>
-            <button onclick="deleteCareerItem('${item.id}')" class="p-1.5 text-slate-500 hover:text-rose-600 transition-colors" title="Hapus Riwayat">
-              <i class="fa-solid fa-trash-can"></i>
-            </button>
+          <td class="p-3 text-slate-500">${item.tahunMulai} — ${item.tahunSelesai}</td>
+          <td class="p-3 text-right">
+            <button onclick="deleteCareerItem('${item.id}')" class="p-1.5 text-slate-500 hover:text-rose-600"><i class="fa-solid fa-trash-can"></i></button>
           </td>
         </tr>
       `).join('') || '<tr><td colspan="5" class="p-4 text-center text-slate-400">Belum ada riwayat.</td></tr>';
     }
 
-    // Membuka modal riwayat (bisa untuk Tambah Baru atau Edit yang sudah ada)
-    function openModalCareerItem(careerId = null) {
-      if (careerId) {
-        const item = appState.riwayat.find(r => r.id === careerId);
-        if (item) {
-          document.getElementById('modal-career-title').innerText = 'Edit Riwayat';
-          document.getElementById('career-id').value = item.id;
-          document.getElementById('career-type').value = item.tipe;
-          document.getElementById('career-institution').value = item.institusi;
-          document.getElementById('career-role').value = item.peranAtauGelar;
-          document.getElementById('career-year-start').value = item.tahunMulai;
-          document.getElementById('career-year-end').value = item.tahunSelesai;
-          document.getElementById('career-desc').value = item.deskripsi || '';
-          openModal('modal-career');
-          return;
-        }
-      }
-
-      // Mode Tambah Baru
-      document.getElementById('modal-career-title').innerText = 'Tambah Riwayat';
+    function openModalCareerItem() {
       document.getElementById('career-id').value = '';
       document.getElementById('career-type').value = 'pendidikan';
       document.getElementById('career-institution').value = '';
       document.getElementById('career-role').value = '';
       document.getElementById('career-year-start').value = '';
       document.getElementById('career-year-end').value = '';
-      document.getElementById('career-desc').value = '';
       openModal('modal-career');
     }
 
@@ -1771,50 +1675,26 @@
       const peran_atau_gelar = document.getElementById('career-role').value.trim();
       const tahun_mulai = document.getElementById('career-year-start').value.trim();
       const tahun_selesai = document.getElementById('career-year-end').value.trim();
-      const deskripsi = document.getElementById('career-desc').value.trim();
 
-      if (id) {
-        // MODE EDIT
-        if (supabaseClient && !id.startsWith('rw_')) {
-          const { error } = await supabaseClient.from('riwayat').update({
-            tipe, institusi, peran_atau_gelar, tahun_mulai, tahun_selesai, deskripsi
-          }).eq('id', id);
-
-          if (error) {
-            showToast("Gagal memperbarui riwayat di database: " + error.message, "Gagal", "error");
-            return;
-          }
-        } else {
-          // Update lokal
-          const idx = appState.riwayat.findIndex(r => r.id === id);
-          if (idx !== -1) {
-            appState.riwayat[idx] = { ...appState.riwayat[idx], tipe, institusi, peranAtauGelar: peran_atau_gelar, tahunMulai: tahun_mulai, tahunSelesai: tahun_selesai, deskripsi };
-          }
+      if (supabaseClient) {
+        const { error } = await supabaseClient.from('riwayat').insert([{
+          tipe, institusi, peran_atau_gelar, tahun_mulai, tahun_selesai
+        }]);
+        if (error) {
+          showToast("Gagal simpan riwayat ke database: " + error.message, "Gagal", "error");
+          return;
         }
-        showToast('Riwayat berhasil diperbarui!', 'Tersimpan');
       } else {
-        // MODE TAMBAH BARU
-        if (supabaseClient) {
-          const { error } = await supabaseClient.from('riwayat').insert([{
-            tipe, institusi, peran_atau_gelar, tahun_mulai, tahun_selesai, deskripsi
-          }]);
-          if (error) {
-            showToast("Gagal simpan riwayat ke database: " + error.message, "Gagal", "error");
-            return;
-          }
-        } else {
-          appState.riwayat.push({
-            id: 'rw_' + Date.now(),
-            tipe, institusi, peranAtauGelar: peran_atau_gelar, tahunMulai: tahun_mulai, tahunSelesai: tahun_selesai, deskripsi
-          });
-        }
-        showToast('Riwayat berhasil ditambahkan!', 'Tersimpan');
+        appState.riwayat.push({
+          id: 'rw_' + Date.now(),
+          tipe, institusi, peranAtauGelar: peran_atau_gelar, tahunMulai: tahun_mulai, tahunSelesai: tahun_selesai
+        });
       }
-
       closeModal('modal-career');
       await loadDataFromSupabase();
       renderAdminCareerTable();
       renderPublicCareerTimeline();
+      showToast('Riwayat berhasil disimpan ke database!', 'Tersimpan');
     }
 
     async function deleteCareerItem(id) {
@@ -1882,14 +1762,12 @@
       reader.readAsDataURL(file);
     }
 
-    // Input URL Foto Profil (Otomatis konversi link Google Drive secara live)
     function handlePhotoUrlInput(e) {
-      const rawUrl = e.target.value.trim();
-      const directUrl = formatGoogleDriveUrl(rawUrl);
-      if (directUrl) {
-        appState.profil.fotoProfilUrl = directUrl;
-        document.getElementById('hero-photo').src = directUrl;
-        document.getElementById('adm-prof-photo-preview').src = directUrl;
+      const url = e.target.value.trim();
+      if (url) {
+        appState.profil.fotoProfilUrl = url;
+        document.getElementById('hero-photo').src = url;
+        document.getElementById('adm-prof-photo-preview').src = url;
       }
     }
 
@@ -1900,9 +1778,7 @@
       const biografi_singkat = document.getElementById('adm-prof-bio').value.trim();
       const biografi_lengkap = document.getElementById('adm-prof-full-bio') ? document.getElementById('adm-prof-full-bio').value.trim() : appState.profil.biografiLengkap;
       const filosofi_mengajar = document.getElementById('adm-prof-philosophy').value.trim();
-      
-      const rawPhotoInput = document.getElementById('adm-prof-photo-url') ? document.getElementById('adm-prof-photo-url').value.trim() : '';
-      const foto_profil_url = rawPhotoInput ? formatGoogleDriveUrl(rawPhotoInput) : appState.profil.fotoProfilUrl;
+      const foto_profil_url = appState.profil.fotoProfilUrl;
 
       if (supabaseClient) {
         const { data: existingRows } = await supabaseClient.from('profil').select('id').limit(1);
@@ -1986,15 +1862,10 @@
           showToast("Gagal simpan ke Supabase: " + error.message, "Gagal Sinkron", "error");
           return;
         }
-      } else {
-        appState.modulAjar.unshift({
-          id: 'mod_' + Date.now(),
-          tipeKarya, judul, mataPelajaran, jenjangKelas, deskripsi, peringkatSinta, namaJurnal, volumeNomor, doiUrl, statusPublikasi: 'publik'
-        });
       }
       closeModal('modal-module');
       await loadDataFromSupabase();
-      showToast('Karya berhasil disimpan!', 'Berhasil');
+      showToast('Karya berhasil disimpan ke Cloud!', 'Berhasil');
     }
 
     function confirmDeleteModule(id) {
@@ -2004,11 +1875,10 @@
         if (supabaseClient) {
           const { error } = await supabaseClient.from('karya').delete().eq('id', id);
           if (error) {
-            showToast("Gagal menghapus dari database: " + error.message, "Gagal", "error");
+            showToast("Gagal menghapus dari cloud: " + error.message, "Gagal", "error");
             return;
           }
         }
-        appState.modulAjar = appState.modulAjar.filter(m => m.id !== id);
         closeModal('modal-confirm-delete');
         await loadDataFromSupabase();
         renderAdminDashboard();
@@ -2024,11 +1894,10 @@
         if (supabaseClient) {
           const { error } = await supabaseClient.from('sertifikasi').delete().eq('id', id);
           if (error) {
-            showToast("Gagal menghapus dari database: " + error.message, "Gagal", "error");
+            showToast("Gagal menghapus dari cloud: " + error.message, "Gagal", "error");
             return;
           }
         }
-        appState.sertifikasi = appState.sertifikasi.filter(c => c.id !== id);
         closeModal('modal-confirm-delete');
         await loadDataFromSupabase();
         renderAdminDashboard();
@@ -2052,8 +1921,7 @@
       const kategori = document.getElementById('cert-category').value;
       const tahun_perolehan = document.getElementById('cert-year').value.trim();
       const institusi_penerbit = document.getElementById('cert-issuer').value.trim();
-      const rawUrl = document.getElementById('cert-photo-url').value.trim();
-      const foto_sertifikat_url = rawUrl ? formatGoogleDriveUrl(rawUrl) : 'https://images.unsplash.com/photo-1589330694653-dad6ef49ca60?w=800&auto=format&fit=crop&q=80';
+      const foto_sertifikat_url = document.getElementById('cert-photo-url').value.trim() || 'https://images.unsplash.com/photo-1589330694653-dad6ef49ca60?w=800&auto=format&fit=crop&q=80';
 
       if (supabaseClient) {
         const { error } = await supabaseClient.from('sertifikasi').insert([{ 
@@ -2063,108 +1931,49 @@
           showToast("Gagal simpan sertifikat: " + error.message, "Gagal", "error");
           return;
         }
-      } else {
-        appState.sertifikasi.unshift({
-          id: 'cert_' + Date.now(), judulPenghargaan: judul_penghargaan, kategori, tahunPerolehan: tahun_perolehan, institusiPenerbit: institusi_penerbit, fotoSertifikatUrl: foto_sertifikat_url
-        });
       }
       closeModal('modal-cert');
       await loadDataFromSupabase();
-      showToast('Sertifikat berhasil disimpan!', 'Tersimpan');
+      showToast('Sertifikat berhasil ditambahkan ke Cloud!', 'Tersimpan');
     }
 
-    function openModalGallery(galleryId = null) {
-      if (galleryId) {
-        const gal = appState.galeri.find(g => g.id === galleryId);
-        if (gal) {
-          document.getElementById('modal-gallery-title').innerText = 'Edit Foto Kegiatan';
-          document.getElementById('gallery-id').value = gal.id;
-          document.getElementById('gallery-title').value = gal.judulKegiatan;
-          document.getElementById('gallery-date').value = gal.tanggal;
-          document.getElementById('gallery-image-url').value = gal.fotoUrl;
-          document.getElementById('gallery-desc').value = gal.deskripsi || '';
-          openModal('modal-gallery');
-          return;
-        }
-      }
-
-      // Mode Tambah Baru
-      document.getElementById('modal-gallery-title').innerText = 'Tambah Foto Kegiatan';
+    function openModalGallery() {
       document.getElementById('gallery-id').value = '';
       document.getElementById('gallery-title').value = '';
-      document.getElementById('gallery-date').value = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+      document.getElementById('gallery-date').value = '14 Maret 2024';
       document.getElementById('gallery-image-url').value = '';
-      document.getElementById('gallery-desc').value = '';
       openModal('modal-gallery');
     }
 
     async function handleSaveGallery(e) {
       e.preventDefault();
-      const id = document.getElementById('gallery-id').value;
       const judul_kegiatan = document.getElementById('gallery-title').value.trim();
       const tanggal = document.getElementById('gallery-date').value.trim();
-      const rawUrl = document.getElementById('gallery-image-url').value.trim();
-      const foto_url = formatGoogleDriveUrl(rawUrl);
-      const deskripsi = document.getElementById('gallery-desc').value.trim();
+      const foto_url = document.getElementById('gallery-image-url').value.trim();
 
-      if (id) {
-        // MODE EDIT GALERI
-        if (supabaseClient && !id.startsWith('gal_')) {
-          // Mencoba update dengan deskripsi, dengan fallback jika kolom belum dibuat di tabel supabase
-          let { error } = await supabaseClient.from('galeri').update({ judul_kegiatan, tanggal, foto_url, deskripsi }).eq('id', id);
-          if (error && error.message && error.message.includes('deskripsi')) {
-            const fallback = await supabaseClient.from('galeri').update({ judul_kegiatan, tanggal, foto_url }).eq('id', id);
-            error = fallback.error;
-          }
-          if (error) {
-            showToast("Gagal memperbarui foto galeri: " + error.message, "Gagal", "error");
-            return;
-          }
-        } else {
-          const idx = appState.galeri.findIndex(g => g.id === id);
-          if (idx !== -1) {
-            appState.galeri[idx] = { ...appState.galeri[idx], judulKegiatan: judul_kegiatan, tanggal, fotoUrl: foto_url, deskripsi };
-          }
+      if (supabaseClient) {
+        const { error } = await supabaseClient.from('galeri').insert([{ judul_kegiatan, tanggal, foto_url }]);
+        if (error) {
+          showToast("Gagal simpan galeri: " + error.message, "Gagal", "error");
+          return;
         }
-        showToast('Foto kegiatan berhasil diperbarui!', 'Tersimpan');
-      } else {
-        // MODE TAMBAH BARU
-        if (supabaseClient) {
-          let { error } = await supabaseClient.from('galeri').insert([{ judul_kegiatan, tanggal, foto_url, deskripsi }]);
-          if (error && error.message && error.message.includes('deskripsi')) {
-            const fallback = await supabaseClient.from('galeri').insert([{ judul_kegiatan, tanggal, foto_url }]);
-            error = fallback.error;
-          }
-          if (error) {
-            showToast("Gagal simpan galeri: " + error.message, "Gagal", "error");
-            return;
-          }
-        } else {
-          appState.galeri.unshift({
-            id: 'gal_' + Date.now(), judulKegiatan: judul_kegiatan, tanggal, fotoUrl: foto_url, deskripsi
-          });
-        }
-        showToast('Foto kegiatan berhasil ditambahkan!', 'Tersimpan');
       }
-
       closeModal('modal-gallery');
       await loadDataFromSupabase();
-      renderAdminDashboard();
-      renderPublicGallery();
+      showToast('Foto galeri berhasil disimpan ke Cloud.', 'Tersimpan');
     }
 
     function deleteGallery(id) {
       document.getElementById('modal-confirm-msg').innerText = "Apakah Anda yakin ingin menghapus foto kegiatan ini dari database?";
       const btn = document.getElementById('btn-confirm-delete-action');
       btn.onclick = async function() {
-        if (supabaseClient && !id.startsWith('gal_')) {
+        if (supabaseClient) {
           const { error } = await supabaseClient.from('galeri').delete().eq('id', id);
           if (error) {
             showToast("Gagal menghapus galeri dari database: " + error.message, "Gagal", "error");
             return;
           }
         }
-        appState.galeri = appState.galeri.filter(g => g.id !== id);
         closeModal('modal-confirm-delete');
         await loadDataFromSupabase();
         renderAdminDashboard();
