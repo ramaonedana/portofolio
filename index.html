@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portofolio</title>
+  <title>Portofolio Rama</title>
   
   <!-- Font Inter Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -262,7 +262,7 @@
                 <div class="absolute right-0 sm:-right-4 bottom-14 z-20 animate-float-fast">
                   <div class="px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-sky-600 text-white font-bold text-xs sm:text-sm shadow-xl shadow-sky-600/30 flex items-center gap-2 border border-sky-400/30">
                     <i class="fa-solid fa-atom text-xs opacity-90"></i>
-                    <span>Praktisi Buddhis</span>
+                    <span>Praktisi STEAM</span>
                   </div>
                 </div>
 
@@ -431,11 +431,11 @@
                 <div class="space-y-4 text-sm">
                   <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center"><i class="fa-solid fa-envelope"></i></div>
-                    <span id="contact-email-label">ramawandana44@gmail.com</span>
+                    <span id="contact-email-label">budi.prasetyo@sekolah.id</span>
                   </div>
                   <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center"><i class="fa-solid fa-location-dot"></i></div>
-                    <span>Pelalawan, Pangkalan Kerinci, Indonesia</span>
+                    <span>DKI Jakarta, Indonesia</span>
                   </div>
                 </div>
               </div>
@@ -536,6 +536,11 @@
                 <div>
                   <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Fokus / Bidang Keahlian</label>
                   <input type="text" id="adm-prof-subject" class="w-full px-3.5 py-2 border rounded-xl text-sm" required>
+                </div>
+                <div class="md:col-span-2">
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Alamat Email Kontak Publik</label>
+                  <input type="email" id="adm-prof-email" class="w-full px-3.5 py-2 border rounded-xl text-sm" placeholder="nama@sekolah.id" required>
+                  <span class="text-[10px] text-slate-400 mt-1 block"><i class="fa-solid fa-circle-info text-brand-600 mr-1"></i>Email ini yang ditampilkan pada bagian 'Mari Berdiskusi' di web publik.</span>
                 </div>
 
                 <div class="md:col-span-2 p-6 bg-gradient-to-br from-brand-50/60 to-white rounded-2xl border border-brand-200 space-y-4 shadow-sm">
@@ -1039,7 +1044,7 @@
       biografiLengkap: 'Saya meyakini bahwa setiap peserta didik memiliki ritme dan potensi unik yang siap berkembang bila diberi ruang eksplorasi yang tepat.',
       filosofiMengajar: 'Pendidikan bukan sekadar mengisi bejana yang kosong, melainkan menyalakan api keingintahuan peserta didik.',
       fotoProfilUrl: 'https://pngimg.com/d/teacher_PNG62451.png',
-      emailKontak: 'ramawandana44@gmail.com'
+      emailKontak: 'budi.prasetyo@sekolah.id'
     };
 
     const appState = {
@@ -1074,12 +1079,26 @@
 
     // Ambil Data dari Supabase secara Cepat & Paralel
     async function loadDataFromSupabase(forceRefresh = false) {
+      // Deteksi jika pengguna telah mengubah email langsung di kode HTML
+      const htmlEmailEl = document.getElementById('contact-email-label');
+      if (htmlEmailEl && htmlEmailEl.innerText.trim() && htmlEmailEl.innerText.trim() !== 'budi.prasetyo@sekolah.id') {
+        const customEmail = htmlEmailEl.innerText.trim();
+        defaultProfile.emailKontak = customEmail;
+        appState.profil.emailKontak = customEmail;
+      }
+
       // 1. Tampilkan data dari cache memori lokal terlebih dahulu untuk kecepatan instan
       const cachedData = localStorage.getItem('guru_portfolio_cache');
       if (cachedData && !forceRefresh) {
         try {
           const parsed = JSON.parse(cachedData);
-          if (parsed.profil) appState.profil = { ...defaultProfile, ...parsed.profil };
+          if (parsed.profil) {
+            appState.profil = { ...defaultProfile, ...parsed.profil };
+            // Pertahankan email kustom jika di cache masih berisi email default lama
+            if (defaultProfile.emailKontak !== 'budi.prasetyo@sekolah.id' && parsed.profil.emailKontak === 'budi.prasetyo@sekolah.id') {
+              appState.profil.emailKontak = defaultProfile.emailKontak;
+            }
+          }
           if (parsed.riwayat) appState.riwayat = parsed.riwayat;
           if (parsed.modulAjar) appState.modulAjar = parsed.modulAjar;
           if (parsed.sertifikasi) appState.sertifikasi = parsed.sertifikasi;
@@ -1136,7 +1155,7 @@
             biografiLengkap: pRes.data.biografi_lengkap,
             filosofiMengajar: pRes.data.filosofi_mengajar,
             fotoProfilUrl: convertGoogleDriveUrl(pRes.data.foto_profil_url) || appState.profil.fotoProfilUrl,
-            emailKontak: pRes.data.email_kontak
+            emailKontak: pRes.data.email_kontak || appState.profil.emailKontak
           };
         }
 
@@ -1702,6 +1721,9 @@
       const prof = appState.profil;
       document.getElementById('adm-prof-name').value = prof.namaLengkap;
       document.getElementById('adm-prof-subject').value = prof.bidangKeahlian;
+      if (document.getElementById('adm-prof-email')) {
+        document.getElementById('adm-prof-email').value = prof.emailKontak || '';
+      }
       document.getElementById('adm-prof-bio').value = prof.biografiSingkat;
       if (document.getElementById('adm-prof-full-bio')) {
         document.getElementById('adm-prof-full-bio').value = prof.biografiLengkap || '';
@@ -1956,6 +1978,7 @@
       e.preventDefault();
       const nama_lengkap = document.getElementById('adm-prof-name').value.trim();
       const bidang_keahlian = document.getElementById('adm-prof-subject').value.trim();
+      const email_kontak = document.getElementById('adm-prof-email') ? document.getElementById('adm-prof-email').value.trim() : appState.profil.emailKontak;
       const biografi_singkat = document.getElementById('adm-prof-bio').value.trim();
       const biografi_lengkap = document.getElementById('adm-prof-full-bio') ? document.getElementById('adm-prof-full-bio').value.trim() : appState.profil.biografiLengkap;
       const filosofi_mengajar = document.getElementById('adm-prof-philosophy').value.trim();
@@ -1972,11 +1995,11 @@
         let result;
         if (existingRows && existingRows.length > 0) {
           result = await supabaseClient.from('profil').update({ 
-            nama_lengkap, bidang_keahlian, biografi_singkat, biografi_lengkap, filosofi_mengajar, foto_profil_url
+            nama_lengkap, bidang_keahlian, biografi_singkat, biografi_lengkap, filosofi_mengajar, foto_profil_url, email_kontak
           }).eq('id', existingRows[0].id);
         } else {
           result = await supabaseClient.from('profil').insert([{ 
-            nama_lengkap, bidang_keahlian, biografi_singkat, biografi_lengkap, filosofi_mengajar, foto_profil_url, email_kontak: appState.profil.emailKontak 
+            nama_lengkap, bidang_keahlian, biografi_singkat, biografi_lengkap, filosofi_mengajar, foto_profil_url, email_kontak 
           }]);
         }
 
@@ -1986,11 +2009,12 @@
         }
       }
 
-      // Perbarui state lokal secara langsung agar foto tidak pernah revert ke foto lama
+      // Perbarui state lokal secara langsung agar foto dan email tidak pernah revert
       appState.profil = { 
         ...appState.profil, 
         namaLengkap: nama_lengkap, 
         bidangKeahlian: bidang_keahlian, 
+        emailKontak: email_kontak,
         biografiSingkat: biografi_singkat, 
         biografiLengkap: biografi_lengkap,
         filosofiMengajar: filosofi_mengajar,
@@ -2003,7 +2027,7 @@
       const preview = document.getElementById('adm-prof-photo-preview');
       if (preview) preview.src = foto_profil_url;
 
-      showToast('Profil dan foto guru berhasil tersimpan permanen!', 'Tersimpan');
+      showToast('Profil dan kontak guru berhasil tersimpan permanen!', 'Tersimpan');
     }
 
     function toggleModuleTypeFields() {
