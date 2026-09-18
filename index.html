@@ -503,13 +503,16 @@
                         <img id="adm-prof-photo-preview" src="https://pngimg.com/d/teacher_PNG62451.png" alt="Pratinjau Foto" class="w-full h-full object-cover">
                       </div>
                     </div>
-                    <div class="sm:col-span-8">
-                      <label class="flex flex-col items-center justify-center border-2 border-dashed border-brand-400 hover:border-brand-600 bg-white hover:bg-brand-50/40 rounded-2xl p-6 cursor-pointer transition-all text-center">
-                        <i class="fa-solid fa-cloud-arrow-up text-2xl text-brand-600 mb-2"></i>
-                        <span class="text-sm font-bold text-slate-800">Klik untuk Unggah Foto Baru</span>
-                        <span class="text-xs text-slate-500 mt-1">Mendukung format JPG, PNG, atau WebP</span>
+                    <div class="sm:col-span-8 space-y-3">
+                      <label class="flex flex-col items-center justify-center border-2 border-dashed border-brand-400 hover:border-brand-600 bg-white hover:bg-brand-50/40 rounded-2xl p-4 cursor-pointer transition-all text-center">
+                        <i class="fa-solid fa-cloud-arrow-up text-xl text-brand-600 mb-1"></i>
+                        <span class="text-xs font-bold text-slate-800">Unggah Foto Baru (Kompresi Otomatis)</span>
                         <input type="file" id="adm-prof-file-input" accept="image/*" onchange="handleProfilePhotoUpload(event)" class="hidden">
                       </label>
+                      <div>
+                        <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Atau Masukkan Tautan URL Foto</label>
+                        <input type="url" id="adm-prof-photo-url" oninput="handlePhotoUrlInput(event)" placeholder="https://..." class="w-full px-3 py-1.5 border rounded-xl text-xs bg-white">
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -517,6 +520,10 @@
                 <div class="md:col-span-2">
                   <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Biografi Singkat</label>
                   <textarea id="adm-prof-bio" rows="3" class="w-full px-3.5 py-2 border rounded-xl text-sm" required></textarea>
+                </div>
+                <div class="md:col-span-2">
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Biografi Lengkap</label>
+                  <textarea id="adm-prof-full-bio" rows="3" class="w-full px-3.5 py-2 border rounded-xl text-sm" required></textarea>
                 </div>
                 <div class="md:col-span-2">
                   <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Filosofi Mengajar</label>
@@ -964,7 +971,6 @@
       }
     }
 
-    // Membaca status sesi tersimpan agar tidak perlu login ulang setiap refresh
     const savedSession = (typeof localStorage !== 'undefined') ? localStorage.getItem('guru_cms_session') : null;
 
     const appState = {
@@ -992,7 +998,7 @@
     let activeKaryaFilter = 'semua';
     let isUserClickingMenu = false;
 
-    // Logika Ketukan Rahasia Pada Logo Guru (Klik 3x santai dengan toleransi 2 detik)
+    // Logika Ketukan Rahasia Pada Logo Guru (Klik 3x santai)
     let secretLogoClicks = 0;
     let secretLogoTimeout = null;
 
@@ -1013,10 +1019,9 @@
           openModal('modal-login');
         }
       } else {
-        // Waktu toleransi diperpanjang menjadi 2 detik agar santai dan akurat
         secretLogoTimeout = setTimeout(() => {
           secretLogoClicks = 0;
-        }, 2000);
+        }, 1500);
       }
     }
 
@@ -1672,31 +1677,17 @@
       const tahun_selesai = document.getElementById('career-year-end').value.trim();
 
       if (supabaseClient) {
-        if (id && !id.startsWith('rw_')) {
-          const { error } = await supabaseClient.from('riwayat').update({
-            tipe, institusi, peran_atau_gelar, tahun_mulai, tahun_selesai
-          }).eq('id', id);
-          if (error) {
-            showToast("Gagal update riwayat di database: " + error.message, "Gagal", "error");
-            return;
-          }
-        } else {
-          const { error } = await supabaseClient.from('riwayat').insert([{
-            tipe, institusi, peran_atau_gelar, tahun_mulai, tahun_selesai
-          }]);
-          if (error) {
-            showToast("Gagal simpan riwayat ke database: " + error.message, "Gagal", "error");
-            return;
-          }
+        const { error } = await supabaseClient.from('riwayat').insert([{
+          tipe, institusi, peran_atau_gelar, tahun_mulai, tahun_selesai
+        }]);
+        if (error) {
+          showToast("Gagal simpan riwayat ke database: " + error.message, "Gagal", "error");
+          return;
         }
       } else {
         appState.riwayat.push({
           id: 'rw_' + Date.now(),
-          tipe,
-          institusi,
-          peranAtauGelar: peran_atau_gelar,
-          tahunMulai: tahun_mulai,
-          tahunSelesai: tahun_selesai
+          tipe, institusi, peranAtauGelar: peran_atau_gelar, tahunMulai: tahun_mulai, tahunSelesai: tahun_selesai
         });
       }
       closeModal('modal-career');
@@ -1735,7 +1726,6 @@
       reader.onload = function(evt) {
         const img = new Image();
         img.onload = function() {
-          // Kompresi otomatis menggunakan Canvas agar ukuran ringan (~50-80KB) dan aman di Supabase
           const canvas = document.createElement('canvas');
           const maxDimension = 600;
           let width = img.width;
@@ -1765,7 +1755,7 @@
           if (document.getElementById('adm-prof-photo-url')) {
             document.getElementById('adm-prof-photo-url').value = '';
           }
-          showToast('Foto profil siap disimpan! Klik "Simpan Seluruh Perubahan" di bawah.', 'Foto Dimuat');
+          showToast('Foto profil siap disimpan! Klik "Simpan Perubahan Profil" di bawah.', 'Foto Dimuat');
         };
         img.src = evt.target.result;
       };
@@ -1791,32 +1781,19 @@
       const foto_profil_url = appState.profil.fotoProfilUrl;
 
       if (supabaseClient) {
-        // Cari baris profil yang sudah ada di Supabase
         const { data: existingRows } = await supabaseClient.from('profil').select('id').limit(1);
         let result;
         if (existingRows && existingRows.length > 0) {
           result = await supabaseClient.from('profil').update({ 
-            nama_lengkap, 
-            bidang_keahlian, 
-            biografi_singkat, 
-            biografi_lengkap, 
-            filosofi_mengajar,
-            foto_profil_url
+            nama_lengkap, bidang_keahlian, biografi_singkat, biografi_lengkap, filosofi_mengajar, foto_profil_url
           }).eq('id', existingRows[0].id);
         } else {
           result = await supabaseClient.from('profil').insert([{ 
-            nama_lengkap, 
-            bidang_keahlian, 
-            biografi_singkat, 
-            biografi_lengkap, 
-            filosofi_mengajar, 
-            foto_profil_url,
-            email_kontak: appState.profil.emailKontak 
+            nama_lengkap, bidang_keahlian, biografi_singkat, biografi_lengkap, filosofi_mengajar, foto_profil_url, email_kontak: appState.profil.emailKontak 
           }]);
         }
 
         if (result.error) {
-          console.error("Gagal simpan profil ke Supabase:", result.error);
           showToast("Gagal menyimpan ke database cloud: " + result.error.message, "Gagal Sinkron", "error");
           return;
         }
@@ -1835,62 +1812,6 @@
       await loadDataFromSupabase();
       renderPublicView();
       showToast('Profil dan foto guru berhasil tersimpan permanen di database!', 'Tersimpan');
-    }
-
-    function deleteCareerItem(id) {
-      appState.riwayat = appState.riwayat.filter(r => r.id !== id);
-      renderAdminCareerTable();
-      renderPublicCareerTimeline();
-      showToast('Riwayat telah dihapus.', 'Dihapus');
-    }
-
-    function handleProfilePhotoUpload(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        appState.profil.fotoProfilUrl = evt.target.result;
-        document.getElementById('hero-photo').src = evt.target.result;
-        document.getElementById('adm-prof-photo-preview').src = evt.target.result;
-        showToast('Foto profil berhasil diubah!', 'Foto Diperbarui');
-      };
-      reader.readAsDataURL(file);
-    }
-
-    async function handleSaveProfile(e) {
-      e.preventDefault();
-      const nama_lengkap = document.getElementById('adm-prof-name').value.trim();
-      const bidang_keahlian = document.getElementById('adm-prof-subject').value.trim();
-      const biografi_singkat = document.getElementById('adm-prof-bio').value.trim();
-      const filosofi_mengajar = document.getElementById('adm-prof-philosophy').value.trim();
-
-      if (supabaseClient) {
-        // Update data jika ID profil ditemukan di cloud
-        const targetId = appState.profil.id && !appState.profil.id.startsWith('prof_') ? appState.profil.id : null;
-        let result;
-        if (targetId) {
-          result = await supabaseClient.from('profil').update({ 
-            nama_lengkap, bidang_keahlian, biografi_singkat, filosofi_mengajar 
-          }).eq('id', targetId);
-        } else {
-          result = await supabaseClient.from('profil').insert([{ 
-            nama_lengkap, bidang_keahlian, biografi_singkat, filosofi_mengajar, email_kontak: appState.profil.emailKontak 
-          }]);
-        }
-
-        if (result.error) {
-          console.error("Gagal simpan profil ke Supabase:", result.error);
-          showToast("Gagal menyimpan ke database cloud: " + result.error.message, "Gagal Sinkron", "error");
-          return;
-        }
-      } else {
-        showToast("Perhatian: Kunci Supabase belum dipasang di kode. Data hanya tersimpan sementara.", "Mode Offline", "error");
-      }
-
-      appState.profil = { ...appState.profil, namaLengkap: nama_lengkap, bidangKeahlian: bidang_keahlian, biografiSingkat: biografi_singkat, filosofiMengajar: filosofi_mengajar };
-      showToast('Profil guru berhasil disimpan ke database!', 'Tersimpan');
-      await loadDataFromSupabase();
-      renderPublicView();
     }
 
     function toggleModuleTypeFields() {
@@ -1933,45 +1854,20 @@
 
       if (supabaseClient) {
         const { error } = await supabaseClient.from('karya').insert([{
-          tipe_karya: tipeKarya,
-          judul,
-          mata_pelajaran: mataPelajaran,
-          jenjang_kelas: jenjangKelas,
-          deskripsi,
-          peringkat_sinta: peringkatSinta,
-          nama_jurnal: namaJurnal,
-          volume_nomor: volumeNomor,
-          doi_url: doiUrl,
-          status_publikasi: 'publik'
+          tipe_karya: tipeKarya, judul, mata_pelajaran: mataPelajaran, jenjang_kelas: jenjangKelas, deskripsi,
+          peringkat_sinta: peringkatSinta, nama_jurnal: namaJurnal, volume_nomor: volumeNomor, doi_url: doiUrl, status_publikasi: 'publik'
         }]);
 
         if (error) {
-          console.error("Gagal simpan karya ke Supabase:", error);
           showToast("Gagal simpan ke Supabase: " + error.message, "Gagal Sinkron", "error");
           return;
         }
-      } else {
-        showToast("Perhatian: Kunci Supabase belum dipasang di GitHub. Data hanya tersimpan di perangkat ini.", "Mode Offline", "error");
-        appState.modulAjar.unshift({
-          id: 'mod_' + Date.now(),
-          tipeKarya,
-          judul,
-          mataPelajaran,
-          jenjangKelas,
-          deskripsi,
-          peringkatSinta,
-          namaJurnal,
-          volumeNomor,
-          doiUrl,
-          statusPublikasi: 'publik'
-        });
       }
       closeModal('modal-module');
       await loadDataFromSupabase();
       showToast('Karya berhasil disimpan ke Cloud!', 'Berhasil');
     }
 
-    // Modal Konfirmasi Hapus Khusus (Tanpa browser confirm dialog)
     function confirmDeleteModule(id) {
       document.getElementById('modal-confirm-msg').innerText = "Apakah Anda yakin ingin menghapus karya modul/artikel ini?";
       const btn = document.getElementById('btn-confirm-delete-action');
@@ -1982,8 +1878,6 @@
             showToast("Gagal menghapus dari cloud: " + error.message, "Gagal", "error");
             return;
           }
-        } else {
-          appState.modulAjar = appState.modulAjar.filter(m => m.id !== id);
         }
         closeModal('modal-confirm-delete');
         await loadDataFromSupabase();
@@ -2003,8 +1897,6 @@
             showToast("Gagal menghapus dari cloud: " + error.message, "Gagal", "error");
             return;
           }
-        } else {
-          appState.sertifikasi = appState.sertifikasi.filter(c => c.id !== id);
         }
         closeModal('modal-confirm-delete');
         await loadDataFromSupabase();
@@ -2039,15 +1931,6 @@
           showToast("Gagal simpan sertifikat: " + error.message, "Gagal", "error");
           return;
         }
-      } else {
-        appState.sertifikasi.push({
-          id: 'cert_' + Date.now(),
-          judulPenghargaan: judul_penghargaan,
-          kategori,
-          tahunPerolehan: tahun_perolehan,
-          institusiPenerbit: institusi_penerbit,
-          fotoSertifikatUrl: foto_sertifikat_url
-        });
       }
       closeModal('modal-cert');
       await loadDataFromSupabase();
@@ -2074,13 +1957,6 @@
           showToast("Gagal simpan galeri: " + error.message, "Gagal", "error");
           return;
         }
-      } else {
-        appState.galeri.push({
-          id: 'gal_' + Date.now(),
-          judulKegiatan: judul_kegiatan,
-          tanggal,
-          fotoUrl: foto_url
-        });
       }
       closeModal('modal-gallery');
       await loadDataFromSupabase();
@@ -2091,14 +1967,13 @@
       document.getElementById('modal-confirm-msg').innerText = "Apakah Anda yakin ingin menghapus foto kegiatan ini dari database?";
       const btn = document.getElementById('btn-confirm-delete-action');
       btn.onclick = async function() {
-        if (supabaseClient && !id.startsWith('gal_')) {
+        if (supabaseClient) {
           const { error } = await supabaseClient.from('galeri').delete().eq('id', id);
           if (error) {
             showToast("Gagal menghapus galeri dari database: " + error.message, "Gagal", "error");
             return;
           }
         }
-        appState.galeri = appState.galeri.filter(g => g.id !== id);
         closeModal('modal-confirm-delete');
         await loadDataFromSupabase();
         renderAdminDashboard();
@@ -2108,18 +1983,16 @@
       openModal('modal-confirm-delete');
     }
 
-    // Inisialisasi Aplikasi Saat Window Dimuat
+    // Inisialisasi Aplikasi
     window.onload = function() {
       loadDataFromSupabase();
       initScrollspy();
       
-      // Jika sesi login masih aktif, tampilkan bilah terapung guru di pojok kiri bawah
       if (appState.auth.isLoggedIn) {
         const adminFloatingBar = document.getElementById('admin-floating-bar');
         if (adminFloatingBar) adminFloatingBar.classList.remove('hidden');
       }
 
-      // Buka CMS otomatis jika URL mengandung #admin atau ?admin
       const checkAdminRoute = () => {
         if (window.location.hash === '#admin' || window.location.search.includes('admin')) {
           if (appState.auth.isLoggedIn) switchView('admin');
@@ -2130,7 +2003,6 @@
       setTimeout(checkAdminRoute, 250);
       window.addEventListener('hashchange', checkAdminRoute);
       
-      // Pintasan keyboard aman: Ctrl + M atau Ctrl + Shift + A
       window.addEventListener('keydown', function(event) {
         const isCtrlOrCmd = event.ctrlKey || event.metaKey;
         const isKeyM = event.key.toLowerCase() === 'm';
