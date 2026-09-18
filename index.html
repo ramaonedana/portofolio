@@ -667,7 +667,7 @@
   </div>
 
   <!-- Modal Login Guru -->
-  <div id="modal-login" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+  <div id="modal-login" class="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl border border-slate-100 relative">
       <button onclick="closeModal('modal-login')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
       <div class="text-center mb-6">
@@ -961,9 +961,12 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5seXN0eHh
       console.warn("Supabase belum dikonfigurasi, mode lokal aktif.");
     }
 
+    // Membaca status sesi tersimpan agar tidak perlu login ulang setiap refresh
+    const savedSession = (typeof localStorage !== 'undefined') ? localStorage.getItem('guru_cms_session') : null;
+
     const appState = {
       auth: {
-        isLoggedIn: false,
+        isLoggedIn: savedSession === 'active',
         currentUser: { email: 'guru@sekolah.id', password: 'guru123' }
       },
       profil: {
@@ -986,7 +989,7 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5seXN0eHh
     let activeKaryaFilter = 'semua';
     let isUserClickingMenu = false;
 
-    // Logika Ketukan Rahasia Pada Logo Guru (Klik 3x cepat)
+    // Logika Ketukan Rahasia Pada Logo Guru (Klik 3x santai dengan toleransi 2 detik)
     let secretLogoClicks = 0;
     let secretLogoTimeout = null;
 
@@ -1007,9 +1010,10 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5seXN0eHh
           openModal('modal-login');
         }
       } else {
+        // Waktu toleransi diperpanjang menjadi 2 detik agar santai dan akurat
         secretLogoTimeout = setTimeout(() => {
           secretLogoClicks = 0;
-        }, 600);
+        }, 2000);
       }
     }
 
@@ -1208,6 +1212,10 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5seXN0eHh
       const adminFloatingBar = document.getElementById('admin-floating-bar');
 
       if (view === 'admin') {
+        if (!appState.auth.isLoggedIn) {
+          openModal('modal-login');
+          return;
+        }
         publicView.classList.add('hidden');
         adminView.classList.remove('hidden');
         if (adminFloatingBar) adminFloatingBar.classList.add('hidden');
@@ -1509,6 +1517,7 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5seXN0eHh
       const pass = document.getElementById('login-password').value;
       if (email === appState.auth.currentUser.email && pass === appState.auth.currentUser.password) {
         appState.auth.isLoggedIn = true;
+        try { localStorage.setItem('guru_cms_session', 'active'); } catch (err) {}
         closeModal('modal-login');
         showToast('Selamat datang di panel guru!', 'Login Berhasil');
         switchView('admin');
@@ -1519,6 +1528,7 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5seXN0eHh
 
     function handleAdminLogout() {
       appState.auth.isLoggedIn = false;
+      try { localStorage.removeItem('guru_cms_session'); } catch (err) {}
       const adminFloatingBar = document.getElementById('admin-floating-bar');
       if (adminFloatingBar) adminFloatingBar.classList.add('hidden');
       showToast('Anda telah keluar dari panel.', 'Logout');
@@ -1868,20 +1878,22 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5seXN0eHh
       loadDataFromSupabase();
       initScrollspy();
       
-      // Buka CMS otomatis jika URL mengandung #admin atau ?admin
-      if (window.location.hash === '#admin' || window.location.search.includes('admin')) {
-        setTimeout(() => {
-          if (appState.auth.isLoggedIn) switchView('admin');
-          else openModal('modal-login');
-        }, 300);
+      // Jika sesi login masih aktif, tampilkan bilah terapung guru di pojok kiri bawah
+      if (appState.auth.isLoggedIn) {
+        const adminFloatingBar = document.getElementById('admin-floating-bar');
+        if (adminFloatingBar) adminFloatingBar.classList.remove('hidden');
       }
 
-      window.addEventListener('hashchange', function() {
-        if (window.location.hash === '#admin') {
+      // Buka CMS otomatis jika URL mengandung #admin atau ?admin
+      const checkAdminRoute = () => {
+        if (window.location.hash === '#admin' || window.location.search.includes('admin')) {
           if (appState.auth.isLoggedIn) switchView('admin');
           else openModal('modal-login');
         }
-      });
+      };
+
+      setTimeout(checkAdminRoute, 250);
+      window.addEventListener('hashchange', checkAdminRoute);
       
       // Pintasan keyboard aman: Ctrl + M atau Ctrl + Shift + A
       window.addEventListener('keydown', function(event) {
