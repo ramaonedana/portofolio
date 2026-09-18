@@ -1827,7 +1827,8 @@
           <td class="p-3 text-slate-900 font-medium">${mod.judul}</td>
           <td class="p-3 text-slate-600">${mod.namaJurnal || mod.mataPelajaran}</td>
           <td class="p-3"><span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-100 text-emerald-800">Publik</span></td>
-          <td class="p-3 text-right">
+          <td class="p-3 text-right whitespace-nowrap">
+            <button onclick="openModalModule('${mod.id}')" class="p-1.5 text-slate-500 hover:text-brand-600 mr-1" title="Edit Karya"><i class="fa-solid fa-pen-to-square"></i></button>
             <button onclick="confirmDeleteModule('${mod.id}')" class="p-1.5 text-slate-500 hover:text-rose-600" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
           </td>
         </tr>
@@ -2140,24 +2141,64 @@
       }
     }
 
-    function openModalModule() {
-      const setSafeValue = (id, val) => {
-        const el = document.getElementById(id);
+    function openModalModule(id = null) {
+      const setSafeValue = (elId, val) => {
+        const el = document.getElementById(elId);
         if (el) el.value = val;
       };
 
+      const modalTitle = document.getElementById('modal-module-title');
+      const previewWrap = document.getElementById('module-cover-preview-wrap');
+      const previewImg = document.getElementById('module-cover-preview');
+
+      if (id) {
+        const mod = appState.modulAjar.find(m => m.id === id);
+        if (mod) {
+          if (modalTitle) modalTitle.innerText = 'Edit Karya / Artikel';
+          setSafeValue('module-id', mod.id);
+          setSafeValue('module-type', mod.tipeKarya || 'modul');
+          setSafeValue('module-title', mod.judul || '');
+          setSafeValue('module-subject', mod.mataPelajaran || '');
+          setSafeValue('module-grade', mod.jenjangKelas || '');
+          setSafeValue('module-desc', mod.deskripsi || '');
+          setSafeValue('module-sinta-rank', mod.peringkatSinta || 'SINTA 2');
+          setSafeValue('module-volume', mod.volumeNomor || '');
+          setSafeValue('module-journal-name', mod.namaJurnal || '');
+          setSafeValue('module-doi-url', mod.doiUrl || '');
+          setSafeValue('module-download-url', mod.downloadUrl || '');
+          setSafeValue('module-cover-url', mod.fotoSampul || '');
+
+          if (mod.fotoSampul) {
+            tempModuleCover = mod.fotoSampul;
+            if (previewImg) previewImg.src = mod.fotoSampul;
+            if (previewWrap) previewWrap.classList.remove('hidden');
+          } else {
+            tempModuleCover = '';
+            if (previewWrap) previewWrap.classList.add('hidden');
+          }
+
+          toggleModuleTypeFields();
+          openModal('modal-module');
+          return;
+        }
+      }
+
+      if (modalTitle) modalTitle.innerText = 'Tambah Karya / Artikel Baru';
       setSafeValue('module-id', '');
+      setSafeValue('module-type', 'modul');
       setSafeValue('module-title', '');
       setSafeValue('module-subject', '');
       setSafeValue('module-grade', '');
       setSafeValue('module-desc', '');
+      setSafeValue('module-sinta-rank', 'SINTA 2');
+      setSafeValue('module-volume', '');
+      setSafeValue('module-journal-name', '');
+      setSafeValue('module-doi-url', '');
       setSafeValue('module-download-url', '');
       setSafeValue('module-cover-url', '');
       setSafeValue('module-cover-file', '');
 
-      const previewWrap = document.getElementById('module-cover-preview-wrap');
       if (previewWrap) previewWrap.classList.add('hidden');
-      const previewImg = document.getElementById('module-cover-preview');
       if (previewImg) previewImg.src = '';
 
       tempModuleCover = '';
@@ -2215,6 +2256,7 @@
 
     async function handleSaveModule(e) {
       e.preventDefault();
+      const id = document.getElementById('module-id').value;
       const tipeKarya = document.getElementById('module-type').value;
       const judul = document.getElementById('module-title').value.trim();
       const mataPelajaran = document.getElementById('module-subject').value.trim();
@@ -2233,42 +2275,74 @@
       const urlInputCover = coverInput ? coverInput.value.trim() : '';
       const foto_sampul = tempModuleCover || (urlInputCover ? convertGoogleDriveUrl(urlInputCover) : '');
 
-      let newId = 'mod_' + Date.now();
-      if (supabaseClient) {
-        let insertPayload = {
-          tipe_karya: tipeKarya, judul, mata_pelajaran: mataPelajaran, jenjang_kelas: jenjangKelas, deskripsi,
-          peringkat_sinta: peringkatSinta, nama_jurnal: namaJurnal, volume_nomor: volumeNomor, doi_url: doiUrl, 
-          file_url: file_url, foto_sampul: foto_sampul,
-          status_publikasi: 'publik'
-        };
+      if (id) {
+        // Mode Edit Karya yang Sudah Ada
+        if (supabaseClient && !id.startsWith('mod_') && !id.startsWith('sinta_')) {
+          let updatePayload = {
+            tipe_karya: tipeKarya, judul, mata_pelajaran: mataPelajaran, jenjang_kelas: jenjangKelas, deskripsi,
+            peringkat_sinta: peringkatSinta, nama_jurnal: namaJurnal, volume_nomor: volumeNomor, doi_url: doiUrl,
+            file_url: file_url, foto_sampul: foto_sampul,
+            status_publikasi: 'publik'
+          };
 
-        let { data, error } = await supabaseClient.from('karya').insert([insertPayload]).select('id').single();
-
-        // Penanganan fallback otomatis jika kolom foto_sampul atau file_url belum dijalankan di SQL Editor Supabase
-        if (error && (error.message.includes('foto_sampul') || error.message.includes('file_url'))) {
-          delete insertPayload.foto_sampul;
-          delete insertPayload.file_url;
-          const fallbackRes = await supabaseClient.from('karya').insert([insertPayload]).select('id').single();
-          if (fallbackRes.data && fallbackRes.data.id) newId = fallbackRes.data.id;
-        } else if (error) {
-          showToast("Gagal simpan karya: " + error.message, "Gagal Sinkron", "error");
-          return;
-        } else if (data && data.id) {
-          newId = data.id;
+          let { error } = await supabaseClient.from('karya').update(updatePayload).eq('id', id);
+          if (error && (error.message.includes('foto_sampul') || error.message.includes('file_url'))) {
+            delete updatePayload.foto_sampul;
+            delete updatePayload.file_url;
+            await supabaseClient.from('karya').update(updatePayload).eq('id', id);
+          } else if (error) {
+            showToast("Gagal memperbarui karya: " + error.message, "Gagal", "error");
+            return;
+          }
         }
-      }
 
-      appState.modulAjar.unshift({
-        id: newId, tipeKarya, judul, mataPelajaran, jenjangKelas, deskripsi, peringkatSinta, namaJurnal, volumeNomor, doiUrl, 
-        downloadUrl: file_url, fotoSampul: foto_sampul,
-        statusPublikasi: 'publik'
-      });
+        const idx = appState.modulAjar.findIndex(m => m.id === id);
+        if (idx !== -1) {
+          appState.modulAjar[idx] = {
+            ...appState.modulAjar[idx],
+            tipeKarya, judul, mataPelajaran, jenjangKelas, deskripsi, peringkatSinta, namaJurnal, volumeNomor, doiUrl,
+            downloadUrl: file_url, fotoSampul: foto_sampul
+          };
+        }
+        showToast('Karya berhasil diperbarui!', 'Tersimpan');
+      } else {
+        // Mode Tambah Karya Baru
+        let newId = 'mod_' + Date.now();
+        if (supabaseClient) {
+          let insertPayload = {
+            tipe_karya: tipeKarya, judul, mata_pelajaran: mataPelajaran, jenjang_kelas: jenjangKelas, deskripsi,
+            peringkat_sinta: peringkatSinta, nama_jurnal: namaJurnal, volume_nomor: volumeNomor, doi_url: doiUrl, 
+            file_url: file_url, foto_sampul: foto_sampul,
+            status_publikasi: 'publik'
+          };
+
+          let { data, error } = await supabaseClient.from('karya').insert([insertPayload]).select('id').single();
+
+          if (error && (error.message.includes('foto_sampul') || error.message.includes('file_url'))) {
+            delete insertPayload.foto_sampul;
+            delete insertPayload.file_url;
+            const fallbackRes = await supabaseClient.from('karya').insert([insertPayload]).select('id').single();
+            if (fallbackRes.data && fallbackRes.data.id) newId = fallbackRes.data.id;
+          } else if (error) {
+            showToast("Gagal simpan karya: " + error.message, "Gagal Sinkron", "error");
+            return;
+          } else if (data && data.id) {
+            newId = data.id;
+          }
+        }
+
+        appState.modulAjar.unshift({
+          id: newId, tipeKarya, judul, mataPelajaran, jenjangKelas, deskripsi, peringkatSinta, namaJurnal, volumeNomor, doiUrl, 
+          downloadUrl: file_url, fotoSampul: foto_sampul,
+          statusPublikasi: 'publik'
+        });
+        showToast('Karya berhasil disimpan!', 'Berhasil');
+      }
 
       closeModal('modal-module');
       saveToLocalCache();
       renderAdminDashboard();
       renderPublicView();
-      showToast('Karya berhasil disimpan!', 'Berhasil');
     }
 
     function confirmDeleteModule(id) {
