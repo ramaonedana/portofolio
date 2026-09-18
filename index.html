@@ -1,0 +1,2147 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portofolio Guru Profesional | Digital Showcase & CMS</title>
+  
+  <!-- Font Inter Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Tailwind Configuration -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Styling scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    /* Modal Backdrop Transitions */
+    .modal-active {
+      display: flex !important;
+    }
+    .badge-pulse {
+      animation: pulseAnimation 2s infinite;
+    }
+    @keyframes pulseAnimation {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.08); opacity: 0.85; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Animasi mengambang halus seperti pada referensi UI */
+    @keyframes floatingSlow {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(-1.5deg); }
+    }
+    @keyframes floatingFast {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(8px) rotate(1.5deg); }
+    }
+    .animate-float-slow {
+      animation: floatingSlow 4s ease-in-out infinite;
+    }
+    .animate-float-fast {
+      animation: floatingFast 3.5s ease-in-out infinite;
+    }
+    /* Bentuk blob organik modern di latar belakang foto */
+    .hero-blob {
+      border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+      transition: all 0.5s ease;
+    }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
+
+  <!-- Top Navigation Bar -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Logo & Title -->
+        <a href="#beranda" class="flex items-center gap-3 group" onclick="handleSecretLogoClick(event)">
+          <div class="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center shadow-md shadow-brand-500/20 group-hover:scale-105 transition-transform cursor-pointer">
+            <i class="fa-solid fa-graduation-cap text-lg"></i>
+          </div>
+          <div>
+            <span id="nav-teacher-name" class="font-bold text-slate-900 leading-tight block text-base group-hover:text-brand-600 transition-colors">
+              Rama, S.Ag.
+            </span>
+            <span class="text-xs text-slate-500 font-medium">Pendidik & Inovator Pembelajaran</span>
+          </div>
+        </a>
+
+        <!-- Desktop Menu Links -->
+        <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
+          <a href="#profil" class="hover:text-brand-600 transition-colors">Profil</a>
+          <a href="#riwayat" class="hover:text-brand-600 transition-colors">Pengalaman</a>
+          <a href="#modul" class="hover:text-brand-600 transition-colors">Karya & Modul</a>
+          <a href="#prestasi" class="hover:text-brand-600 transition-colors">Sertifikasi</a>
+          <a href="#galeri" class="hover:text-brand-600 transition-colors">Galeri</a>
+          <a href="#kontak" class="hover:text-brand-600 transition-colors">Kontak</a>
+        </nav>
+
+        <!-- Mobile Menu Toggle Button (Bilah navigasi publik bersih tanpa tombol CMS) -->
+        <div class="flex items-center">
+          <button id="btn-mobile-menu" onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 focus:outline-none" aria-label="Buka Menu">
+            <i class="fa-solid fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-slate-200 px-4 pt-2 pb-4 space-y-2">
+      <a href="#profil" onclick="toggleMobileMenu()" class="block py-2 text-slate-700 font-medium hover:text-brand-600">Profil & Filosofi</a>
+      <a href="#riwayat" onclick="toggleMobileMenu()" class="block py-2 text-slate-700 font-medium hover:text-brand-600">Riwayat & Karir</a>
+      <a href="#modul" onclick="toggleMobileMenu()" class="block py-2 text-slate-700 font-medium hover:text-brand-600">Karya & Modul Ajar</a>
+      <a href="#prestasi" onclick="toggleMobileMenu()" class="block py-2 text-slate-700 font-medium hover:text-brand-600">Sertifikasi & Penghargaan</a>
+      <a href="#galeri" onclick="toggleMobileMenu()" class="block py-2 text-slate-700 font-medium hover:text-brand-600">Dokumentasi Pembelajaran</a>
+      <a href="#kontak" onclick="toggleMobileMenu()" class="block py-2 text-slate-700 font-medium hover:text-brand-600">Kirim Pesan</a>
+    </div>
+  </header>
+
+  <main class="flex-grow">
+    
+    <!-- ============================================================= -->
+    <!-- VIEW 1: PUBLIC VIEW (TAMPILAN PUBLIK PENGUNJUNG) -->
+    <!-- ============================================================= -->
+    <div id="view-public" class="space-y-16 pb-20">
+
+      <!-- Hero & Quick Profile Section -->
+      <section id="beranda" class="relative overflow-hidden pt-12 pb-16 lg:pt-20 lg:pb-24 bg-gradient-to-b from-brand-50/70 via-white to-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            <!-- Hero Text -->
+            <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+              <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-100 text-brand-800 text-xs font-semibold tracking-wide">
+                <span class="w-2 h-2 rounded-full bg-brand-600 animate-ping"></span>
+                <span>Portofolio Digital Resmi Pendidik</span>
+              </div>
+              <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                Membangun Generasi Cerdas & Berkarakter Melalui <span class="text-brand-600 underline decoration-brand-500/30">Inovasi Pembelajaran</span>
+              </h1>
+              <p id="hero-bio" class="text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                Memuat data profil...
+              </p>
+              
+              <!-- CTAs -->
+              <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+                <a href="#modul" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-brand-600 text-white font-semibold shadow-lg shadow-brand-600/30 hover:bg-brand-700 active:scale-95 transition-all">
+                  <i class="fa-solid fa-book-open"></i>
+                  <span>Jelajahi Modul Ajar</span>
+                </a>
+                <a href="#kontak" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white border border-slate-300 text-slate-700 font-semibold hover:bg-slate-50 shadow-sm active:scale-95 transition-all">
+                  <i class="fa-regular fa-paper-plane"></i>
+                  <span>Hubungi Saya</span>
+                </a>
+              </div>
+
+              <!-- Quick stats -->
+              <div class="grid grid-cols-3 gap-4 pt-6 max-w-md mx-auto lg:mx-0 border-t border-slate-200/80">
+                <div>
+                  <div id="stat-exp-years" class="text-2xl sm:text-3xl font-bold text-slate-900">12+</div>
+                  <div class="text-xs text-slate-500 font-medium">Tahun Pengabdian</div>
+                </div>
+                <div>
+                  <div id="stat-modules-count" class="text-2xl sm:text-3xl font-bold text-brand-600">0</div>
+                  <div class="text-xs text-slate-500 font-medium">Modul Diterbitkan</div>
+                </div>
+                <div>
+                  <div id="stat-certs-count" class="text-2xl sm:text-3xl font-bold text-indigo-600">0</div>
+                  <div class="text-xs text-slate-500 font-medium">Sertifikasi & Lisensi</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hero Photo Card (Gaya Baru: Blob Latar + Floating Badges Kiri & Kanan) -->
+            <div class="lg:col-span-5 flex justify-center items-center">
+              <div class="relative w-full max-w-[380px] sm:max-w-[420px] flex items-center justify-center py-6">
+                
+                <!-- 1. Garis Putus-Putus Dekoratif Melingkar (Dashed Line Art) -->
+                <svg class="absolute -right-6 top-8 w-44 h-44 text-brand-300/70 pointer-events-none hidden sm:block" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M10,80 C10,35 45,10 90,10 C135,10 150,55 140,105 C130,155 75,150 40,130" stroke="currentColor" stroke-width="2.5" stroke-dasharray="6 6" stroke-linecap="round"/>
+                </svg>
+
+                <!-- 2. Bentuk Blob Organik Berwarna Biru/Hijau Brand di Belakang Potret -->
+                <div class="absolute w-72 h-72 sm:w-80 sm:h-80 bg-gradient-to-tr from-brand-600 to-sky-500 hero-blob shadow-2xl shadow-brand-500/30"></div>
+
+                <!-- 3. Wadah Foto Guru dengan Efek Melayang & Shadow Halus (Cutout Transparan) -->
+                <div class="relative z-10 w-72 sm:w-80 h-84 sm:h-[410px] flex items-end justify-center pointer-events-none">
+                  <img id="hero-photo" src="" alt="Foto Profil Guru" class="w-full h-full object-contain object-bottom drop-shadow-2xl select-none transition-all duration-300">
+                </div>
+
+                <!-- 4. Floating Badge Kiri Atas (Gaya "WEB Designer" dengan Pointer Panah) -->
+                <div class="absolute left-0 sm:-left-4 top-16 z-20 animate-float-slow">
+                  <!-- Ikon Pointer Kursor Kecil -->
+                  <div class="absolute -top-3.5 left-2 text-brand-600 drop-shadow-md">
+                    <i class="fa-solid fa-location-arrow text-base transform -rotate-45"></i>
+                  </div>
+                  <div class="px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-brand-600 text-white font-bold text-xs sm:text-sm shadow-xl shadow-brand-600/30 flex items-center gap-2 border border-brand-400/30">
+                    <i class="fa-solid fa-chalkboard-user text-xs opacity-90"></i>
+                    <span id="hero-badge-left">Pendidik Inovatif</span>
+                  </div>
+                </div>
+
+                <!-- 5. Floating Badge Kanan Bawah (Gaya Kapsul "UIUX Designer") -->
+                <div class="absolute right-0 sm:-right-4 bottom-14 z-20 animate-float-fast">
+                  <div class="px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-sky-600 text-white font-bold text-xs sm:text-sm shadow-xl shadow-sky-600/30 flex items-center gap-2 border border-sky-400/30">
+                    <i class="fa-solid fa-atom text-xs opacity-90"></i>
+                    <span id="hero-badge-right">Praktisi Buddhis</span>
+                  </div>
+                </div>
+
+                <!-- 6. Kartu Verifikasi Mini di Sisi Bawah Tengah -->
+                <div class="absolute -bottom-2 z-20 bg-white/95 backdrop-blur-md px-4 py-2 rounded-2xl shadow-lg border border-slate-100 flex items-center gap-2.5">
+                  <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs">
+                    <i class="fa-solid fa-shield-check"></i>
+                  </div>
+                  <div class="text-left">
+                    <div id="hero-name-badge" class="text-xs font-bold text-slate-800 leading-none">Rama, S.Ag.</div>
+                    <div class="text-[10px] text-slate-500 font-medium mt-0.5">Pendidikan Agama Buddha</div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Profile & Teaching Philosophy Section -->
+      <section id="profil" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          
+          <!-- Philosophy Quote -->
+          <div class="lg:col-span-5 bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-3xl p-8 flex flex-col justify-between shadow-lg relative overflow-hidden">
+            <div class="absolute -right-8 -top-8 text-slate-800/40 text-9xl font-serif pointer-events-none">
+              <i class="fa-solid fa-quote-right"></i>
+            </div>
+            <div class="relative z-10 space-y-4">
+              <div class="w-10 h-10 rounded-xl bg-brand-500/20 text-brand-400 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-lightbulb"></i>
+              </div>
+              <h3 class="text-xl font-bold tracking-tight">Filosofi Mengajar</h3>
+              <p id="profile-philosophy" class="text-slate-300 italic text-base leading-relaxed">
+                "Pendidikan bukan sekadar mengisi bejana yang kosong, melainkan menyalakan api keingintahuan dan potensi bawaan peserta didik."
+              </p>
+            </div>
+            <div class="pt-6 relative z-10 border-t border-slate-700/60 mt-6 flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-brand-600 text-white flex items-center justify-center text-xs font-bold">BP</div>
+              <div class="text-xs text-slate-400">Prinsip Merdeka Belajar & Pembelajaran Bermakna</div>
+            </div>
+          </div>
+
+          <!-- About Details & Competencies -->
+          <div class="lg:col-span-7 bg-white rounded-3xl p-8 border border-slate-200 shadow-sm flex flex-col justify-center">
+            <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-user-check text-brand-600"></i>
+              <span>Dedikasi & Pendekatan Pedagogik</span>
+            </h3>
+            <p id="profile-full-bio" class="text-slate-600 leading-relaxed text-sm sm:text-base mb-6">
+              Memuat deskripsi lengkap...
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+              <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-start gap-3">
+                <div class="p-2 rounded-xl bg-brand-100 text-brand-700 text-sm">
+                  <i class="fa-solid fa-laptop-code"></i>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-slate-900 text-sm">Integrasi Teknologi (EdTech)</h4>
+                  <p class="text-xs text-slate-500 mt-0.5">Pemanfaatan simulasi interaktif dan media pembelajaran multimedia.</p>
+                </div>
+              </div>
+              <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-start gap-3">
+                <div class="p-2 rounded-xl bg-indigo-100 text-indigo-700 text-sm">
+                  <i class="fa-solid fa-brain"></i>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-slate-900 text-sm">Diferensiasi Pembelajaran</h4>
+                  <p class="text-xs text-slate-500 mt-0.5">Penyelarasan metode dengan kesiapan, minat, dan profil belajar siswa.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Education & Career History Section -->
+      <section id="riwayat" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-12">
+          <span class="text-xs font-bold uppercase tracking-wider text-brand-600 bg-brand-50 px-3 py-1 rounded-full">Jejak Langkah</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Riwayat Pendidikan & Pengalaman Mengajar</h2>
+          <p class="text-slate-600 text-sm sm:text-base mt-2">Rekam jejak formal serta pengalaman pengabdian di berbagai satuan pendidikan.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          
+          <!-- Education Column -->
+          <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+            <h3 class="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2 pb-3 border-b border-slate-100">
+              <i class="fa-solid fa-user-graduate text-brand-600"></i>
+              <span>Pendidikan Formal</span>
+            </h3>
+            <div id="list-public-education" class="space-y-6">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Career/Experience Column -->
+          <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+            <h3 class="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2 pb-3 border-b border-slate-100">
+              <i class="fa-solid fa-briefcase text-brand-600"></i>
+              <span>Pengalaman Mengajar & Pengabdian</span>
+            </h3>
+            <div id="list-public-experience" class="space-y-6">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Modules & Teaching Works Showcase Section -->
+      <section id="modul" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-brand-600 bg-brand-50 px-3 py-1 rounded-full">Katalog Publik</span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Modul Ajar & Publikasi Edukasi</h2>
+            <p class="text-slate-600 text-sm mt-1">Materi terbuka yang dirancang untuk pendidik, siswa, dan komunitas belajar.</p>
+          </div>
+          <!-- Search Box -->
+          <div class="w-full md:w-80">
+            <div class="relative">
+              <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+              <input type="text" id="input-search-module" oninput="handleFilterModules()" placeholder="Cari judul modul atau mapel..." class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all shadow-sm">
+            </div>
+          </div>
+        </div>
+
+        <!-- Modules Grid -->
+        <div id="grid-public-modules" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Rendered via JS -->
+        </div>
+
+        <div id="empty-module-search" class="hidden text-center py-12 bg-white rounded-3xl border border-dashed border-slate-300 p-8">
+          <i class="fa-solid fa-file-circle-xmark text-4xl text-slate-400 mb-3"></i>
+          <h4 class="font-bold text-slate-700">Tidak ada modul yang cocok</h4>
+          <p class="text-sm text-slate-500">Coba ubah kata kunci pencarian Anda.</p>
+        </div>
+      </section>
+
+      <!-- Certifications & Awards Section -->
+      <section id="prestasi" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-10">
+          <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">Kredibilitas & Pengakuan</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Sertifikasi & Penghargaan</h2>
+          <p class="text-slate-600 text-sm sm:text-base mt-2">Lisensi profesional pendidik, keikutsertaan pelatihan nasional, dan apresiasi karya.</p>
+        </div>
+
+        <div id="grid-public-certifications" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Rendered via JS -->
+        </div>
+      </section>
+
+      <!-- Learning Activities Gallery Section -->
+      <section id="galeri" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-10">
+          <span class="text-xs font-bold uppercase tracking-wider text-brand-600 bg-brand-50 px-3 py-1 rounded-full">Aktivitas Nyata</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Galeri Kegiatan Pembelajaran</h2>
+          <p class="text-slate-600 text-sm sm:text-base mt-2">Dokumentasi interaksi di ruang kelas, proyek sains siswa, dan aktivitas pendampingan ekstrakurikuler.</p>
+        </div>
+
+        <div id="grid-public-gallery" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Rendered via JS -->
+        </div>
+      </section>
+
+      <!-- Contact Form Section -->
+      <section id="kontak" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
+          <div class="grid grid-cols-1 md:grid-cols-5">
+            
+            <!-- Info Sidebar -->
+            <div class="md:col-span-2 bg-gradient-to-br from-brand-700 to-brand-900 text-white p-8 flex flex-col justify-between">
+              <div>
+                <h3 class="text-2xl font-bold mb-3">Mari Berdiskusi</h3>
+                <p class="text-brand-100 text-sm leading-relaxed mb-6">
+                  Terbuka untuk undangan seminar, kolaborasi modul ajar, konsultasi kurikulum, atau sapaan hangat dari siswa dan rekan pendidik.
+                </p>
+                <div class="space-y-4 text-sm">
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
+                      <i class="fa-solid fa-envelope"></i>
+                    </div>
+                    <span id="contact-email-label">budi.prasetyo@sekolah.id</span>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
+                      <i class="fa-solid fa-location-dot"></i>
+                    </div>
+                    <span>DKI Jakarta, Indonesia</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-8 border-t border-brand-600/60 mt-8">
+                <p class="text-xs text-brand-200">Setiap pesan yang dikirimkan akan ditinjau langsung oleh guru melalui panel dasbor.</p>
+              </div>
+            </div>
+
+            <!-- Form -->
+            <div class="md:col-span-3 p-8">
+              <form id="form-contact-public" onsubmit="handleSendPublicMessage(event)" class="space-y-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Nama Lengkap *</label>
+                  <input type="text" id="contact-sender-name" required placeholder="Contoh: Rina Amalia (Wali Murid)" class="w-full px-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500">
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Alamat Email *</label>
+                  <input type="email" id="contact-sender-email" required placeholder="nama@email.com" class="w-full px-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500">
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Subjek Kepentingan *</label>
+                  <input type="text" id="contact-sender-subject" required placeholder="Contoh: Undangan Narasumber Lokakarya" class="w-full px-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500">
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Isi Pesan *</label>
+                  <textarea id="contact-sender-message" rows="4" required placeholder="Tuliskan pesan, pertanyaan, atau detail ajakan kerjasama Anda di sini..." class="w-full px-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500"></textarea>
+                </div>
+
+                <button type="submit" class="w-full py-3 px-6 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm shadow-md shadow-brand-600/20 active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+                  <i class="fa-solid fa-paper-plane"></i>
+                  <span>Kirimkan Pesan Sekarang</span>
+                </button>
+              </form>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+
+    <!-- ============================================================= -->
+    <!-- VIEW 2: ADMIN / CMS DASHBOARD (PANEL PENGELOLA KONTEN GURU) -->
+    <!-- ============================================================= -->
+    <div id="view-admin" class="hidden min-h-[calc(100vh-4rem)] bg-slate-100 py-8">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Top Admin Header -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-1 rounded-md bg-brand-100 text-brand-800 text-xs font-bold uppercase tracking-wider">CMS Portofolio</span>
+              <span class="text-slate-400 text-sm">|</span>
+              <span class="text-xs text-slate-500">Mode Kelola Mandiri Guru</span>
+            </div>
+            <h1 class="text-xl sm:text-2xl font-black text-slate-900 mt-1">Dasbor Pengelolaan Konten</h1>
+          </div>
+          
+          <!-- Admin Actions -->
+          <div class="flex items-center gap-2">
+            <button onclick="switchView('public')" class="px-3.5 py-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-semibold flex items-center gap-1.5 transition-colors">
+              <i class="fa-solid fa-arrow-left"></i>
+              <span>Lihat Web Publik</span>
+            </button>
+            <button onclick="handleAdminLogout()" class="px-3.5 py-2 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 text-xs font-semibold flex items-center gap-1.5 transition-colors">
+              <i class="fa-solid fa-right-from-bracket"></i>
+              <span>Keluar (Logout)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Admin Tab Navigation -->
+        <div class="flex border-b border-slate-200 bg-white rounded-t-2xl px-4 pt-2 gap-2 overflow-x-auto">
+          <button onclick="setAdminTab('tab-profile')" id="btn-tab-profile" class="admin-tab-btn py-3 px-4 font-semibold text-xs sm:text-sm border-b-2 border-brand-600 text-brand-600 flex items-center gap-2 whitespace-nowrap">
+            <i class="fa-solid fa-id-card"></i> Profil & Karir
+          </button>
+          <button onclick="setAdminTab('tab-modules')" id="btn-tab-modules" class="admin-tab-btn py-3 px-4 font-semibold text-xs sm:text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 whitespace-nowrap">
+            <i class="fa-solid fa-book"></i> Modul Ajar
+          </button>
+          <button onclick="setAdminTab('tab-certs')" id="btn-tab-certs" class="admin-tab-btn py-3 px-4 font-semibold text-xs sm:text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 whitespace-nowrap">
+            <i class="fa-solid fa-award"></i> Sertifikasi
+          </button>
+          <button onclick="setAdminTab('tab-gallery')" id="btn-tab-gallery" class="admin-tab-btn py-3 px-4 font-semibold text-xs sm:text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 whitespace-nowrap">
+            <i class="fa-solid fa-images"></i> Galeri Kegiatan
+          </button>
+          <button onclick="setAdminTab('tab-messages')" id="btn-tab-messages" class="admin-tab-btn py-3 px-4 font-semibold text-xs sm:text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 whitespace-nowrap">
+            <i class="fa-solid fa-inbox"></i> Pesan Masuk
+            <span id="unread-badge-tab" class="hidden px-2 py-0.5 rounded-full bg-rose-500 text-white text-xs font-bold">0</span>
+          </button>
+          <button onclick="setAdminTab('tab-settings')" id="btn-tab-settings" class="admin-tab-btn py-3 px-4 font-semibold text-xs sm:text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 whitespace-nowrap">
+            <i class="fa-solid fa-key"></i> Akun & Sandi
+          </button>
+        </div>
+
+        <!-- ================= ADMIN TAB CONTENT PANELS ================= -->
+        <div class="bg-white rounded-b-2xl p-6 border-x border-b border-slate-200 shadow-sm min-h-[500px]">
+          
+          <!-- TAB 1: PROFIL & KARIR -->
+          <div id="tab-profile" class="admin-tab-panel space-y-8">
+            <div class="border-b border-slate-100 pb-4 flex items-center justify-between">
+              <div>
+                <h2 class="text-lg font-bold text-slate-900">Biodata & Informasi Publik Guru</h2>
+                <p class="text-xs text-slate-500">Perbarui identitas, gelar, filosofi mengajar, serta pranala sosial media Anda.</p>
+              </div>
+            </div>
+
+            <form id="form-manage-profile" onsubmit="handleSaveProfile(event)" class="space-y-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nama Lengkap & Gelar</label>
+                  <input type="text" id="adm-prof-name" class="w-full px-3.5 py-2 border rounded-xl text-sm" required>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Fokus / Mata Pelajaran</label>
+                  <input type="text" id="adm-prof-subject" class="w-full px-3.5 py-2 border rounded-xl text-sm" required>
+                </div>
+
+                <div class="md:col-span-2 p-6 bg-gradient-to-br from-brand-50/60 to-white rounded-2xl border border-brand-200 space-y-4 shadow-sm">
+                  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <label class="block text-xs font-black text-slate-800 uppercase tracking-wide">Foto Profil Utama</label>
+                      </div>
+                      <p class="text-xs text-slate-600 mt-0.5">Unggah foto portofolio terbaik Anda. Tampilan di halaman publik akan otomatis memperbarui foto Anda dengan latar asli.</p>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center pt-2">
+                    <!-- Pratinjau Foto Saat Ini -->
+                    <div class="sm:col-span-4 flex flex-col items-center justify-center p-4 bg-white rounded-2xl border border-slate-200 shadow-sm">
+                      <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Foto Aktif Saat Ini</span>
+                      <div class="w-28 h-28 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 flex items-center justify-center shadow-inner">
+                        <img id="adm-prof-photo-preview" src="" alt="Pratinjau Foto" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/200x200/e2e8f0/475569?text=Foto'">
+                      </div>
+                    </div>
+
+                    <!-- Tombol Unggah Berkas -->
+                    <div class="sm:col-span-8">
+                      <label class="flex flex-col items-center justify-center border-2 border-dashed border-brand-400 hover:border-brand-600 bg-white hover:bg-brand-50/40 rounded-2xl p-6 cursor-pointer transition-all text-center shadow-sm">
+                        <div class="w-12 h-12 rounded-2xl bg-brand-100 text-brand-600 flex items-center justify-center text-xl mb-3 shadow-sm">
+                          <i class="fa-solid fa-cloud-arrow-up"></i>
+                        </div>
+                        <span class="text-sm font-bold text-slate-800">Klik untuk Unggah Foto Baru</span>
+                        <span class="text-xs text-slate-500 mt-1">Mendukung format JPG, PNG, atau WebP dari perangkat Anda</span>
+                        <input type="file" id="adm-prof-file-input" accept="image/*" onchange="handleProfilePhotoUpload(event)" class="hidden">
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="md:col-span-2">
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Biografi Singkat</label>
+                  <textarea id="adm-prof-bio" rows="3" class="w-full px-3.5 py-2 border rounded-xl text-sm" required></textarea>
+                </div>
+                <div class="md:col-span-2">
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Filosofi Mengajar</label>
+                  <textarea id="adm-prof-philosophy" rows="2" class="w-full px-3.5 py-2 border rounded-xl text-sm" required></textarea>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tautan LinkedIn</label>
+                  <input type="text" id="adm-prof-linkedin" class="w-full px-3.5 py-2 border rounded-xl text-sm">
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tautan Instagram</label>
+                  <input type="text" id="adm-prof-instagram" class="w-full px-3.5 py-2 border rounded-xl text-sm">
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tautan YouTube</label>
+                  <input type="text" id="adm-prof-youtube" class="w-full px-3.5 py-2 border rounded-xl text-sm">
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Email Kontak Publik</label>
+                  <input type="email" id="adm-prof-email" class="w-full px-3.5 py-2 border rounded-xl text-sm">
+                </div>
+              </div>
+
+              <button type="submit" class="px-6 py-2.5 rounded-xl bg-brand-600 text-white font-semibold text-sm hover:bg-brand-700 transition-colors">
+                <i class="fa-solid fa-floppy-disk mr-1.5"></i> Simpan Perubahan Profil
+              </button>
+            </form>
+
+            <!-- Career & Education Items Manager -->
+            <div class="pt-8 border-t border-slate-200">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h3 class="font-bold text-slate-900">Riwayat Pendidikan & Pengalaman Kerja</h3>
+                  <p class="text-xs text-slate-500">Kelola riwayat gelar akademik dan jejak institusi tempat mengajar.</p>
+                </div>
+                <button onclick="openModalCareerItem()" class="px-3 py-1.5 rounded-xl bg-brand-50 text-brand-700 hover:bg-brand-100 font-semibold text-xs flex items-center gap-1">
+                  <i class="fa-solid fa-plus"></i> Tambah Riwayat
+                </button>
+              </div>
+
+              <div id="adm-career-table-container" class="overflow-x-auto">
+                <table class="w-full text-left text-xs sm:text-sm">
+                  <thead class="bg-slate-50 text-slate-700 font-semibold uppercase text-[11px]">
+                    <tr>
+                      <th class="p-3">Tipe</th>
+                      <th class="p-3">Institusi</th>
+                      <th class="p-3">Gelar / Peran</th>
+                      <th class="p-3">Periode</th>
+                      <th class="p-3 text-right">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="adm-career-tbody" class="divide-y divide-slate-100">
+                    <!-- Rendered via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: MODUL AJAR -->
+          <div id="tab-modules" class="admin-tab-panel hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+              <div>
+                <h2 class="text-lg font-bold text-slate-900">Daftar Modul Ajar & Publikasi</h2>
+                <p class="text-xs text-slate-500">Kelola karya bahan ajar, rubrik, dan status publikasi (Draf / Publik).</p>
+              </div>
+              <button onclick="openModalModule()" class="px-4 py-2 rounded-xl bg-brand-600 text-white hover:bg-brand-700 text-xs font-semibold flex items-center gap-2">
+                <i class="fa-solid fa-plus"></i> Tambah Modul Baru
+              </button>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs sm:text-sm">
+                <thead class="bg-slate-50 text-slate-700 font-semibold uppercase text-[11px]">
+                  <tr>
+                    <th class="p-3">Judul Modul</th>
+                    <th class="p-3">Mata Pelajaran</th>
+                    <th class="p-3">Jenjang / Kelas</th>
+                    <th class="p-3">Ukuran Berkas</th>
+                    <th class="p-3">Status</th>
+                    <th class="p-3 text-right">Tindakan</th>
+                  </tr>
+                </thead>
+                <tbody id="adm-modules-tbody" class="divide-y divide-slate-100">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 3: SERTIFIKASI & PENGHARGAAN -->
+          <div id="tab-certs" class="admin-tab-panel hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+              <div>
+                <h2 class="text-lg font-bold text-slate-900">Sertifikat, Lisensi & Apresiasi</h2>
+                <p class="text-xs text-slate-500">Tambahkan bukti kredensial pelatihan guru dan pencapaian profesional.</p>
+              </div>
+              <button onclick="openModalCert()" class="px-4 py-2 rounded-xl bg-brand-600 text-white hover:bg-brand-700 text-xs font-semibold flex items-center gap-2">
+                <i class="fa-solid fa-plus"></i> Tambah Sertifikat
+              </button>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs sm:text-sm">
+                <thead class="bg-slate-50 text-slate-700 font-semibold uppercase text-[11px]">
+                  <tr>
+                    <th class="p-3">Nama Sertifikat</th>
+                    <th class="p-3">Kategori</th>
+                    <th class="p-3">Penerbit</th>
+                    <th class="p-3">Tahun</th>
+                    <th class="p-3 text-right">Tindakan</th>
+                  </tr>
+                </thead>
+                <tbody id="adm-certs-tbody" class="divide-y divide-slate-100">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 4: GALERI KEGIATAN -->
+          <div id="tab-gallery" class="admin-tab-panel hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+              <div>
+                <h2 class="text-lg font-bold text-slate-900">Dokumentasi Pembelajaran</h2>
+                <p class="text-xs text-slate-500">Unggah dan kelola arsip foto kegiatan belajar mengajar.</p>
+              </div>
+              <button onclick="openModalGallery()" class="px-4 py-2 rounded-xl bg-brand-600 text-white hover:bg-brand-700 text-xs font-semibold flex items-center gap-2">
+                <i class="fa-solid fa-plus"></i> Tambah Foto Kegiatan
+              </button>
+            </div>
+
+            <div id="adm-gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- TAB 5: PESAN MASUK -->
+          <div id="tab-messages" class="admin-tab-panel hidden space-y-6">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div>
+                <h2 class="text-lg font-bold text-slate-900">Kotak Masuk Pesan Pengunjung</h2>
+                <p class="text-xs text-slate-500">Pesan yang dikirimkan oleh siswa, wali murid, atau rekan sejawat melalui form kontak.</p>
+              </div>
+            </div>
+
+            <div id="adm-messages-container" class="space-y-3">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- TAB 6: GANTI SANDI -->
+          <div id="tab-settings" class="admin-tab-panel hidden space-y-6">
+            <div class="border-b border-slate-100 pb-4">
+              <h2 class="text-lg font-bold text-slate-900">Keamanan & Akun Guru</h2>
+              <p class="text-xs text-slate-500">Ubah kata sandi login panel CMS administrator.</p>
+            </div>
+
+            <form id="form-change-password" onsubmit="handleChangePassword(event)" class="max-w-md space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Email Saat Ini</label>
+                <input type="text" id="adm-account-email" disabled class="w-full px-3.5 py-2 bg-slate-100 border rounded-xl text-sm text-slate-500">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Kata Sandi Saat Ini</label>
+                <input type="password" id="adm-old-password" required class="w-full px-3.5 py-2 border rounded-xl text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Kata Sandi Baru</label>
+                <input type="password" id="adm-new-password" required minlength="6" placeholder="Minimal 6 karakter" class="w-full px-3.5 py-2 border rounded-xl text-sm">
+              </div>
+              <button type="submit" class="px-5 py-2.5 rounded-xl bg-brand-600 text-white font-semibold text-xs hover:bg-brand-700 transition-colors">
+                Perbarui Kata Sandi
+              </button>
+            </form>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 py-8 text-slate-500 text-xs text-center">
+    <div class="max-w-7xl mx-auto px-4 space-y-2">
+      <p class="font-medium text-slate-700">&copy; <span id="footer-year"></span> <span id="footer-teacher-name">Budi Prasetyo, M.Pd.</span> — Seluruh Hak Cipta Dilindungi.</p>
+      <p class="text-slate-400">Dirancang khusus untuk portofolio pendidik profesional sesuai spesifikasi PRD.</p>
+    </div>
+  </footer>
+
+  <!-- Bilah Terapung Pengelola (Hanya muncul jika guru sudah login) -->
+  <div id="admin-floating-bar" class="hidden fixed bottom-5 left-5 z-40 bg-slate-900/95 backdrop-blur-md text-white px-4 py-2.5 rounded-2xl shadow-2xl border border-slate-700 flex items-center gap-3 text-xs animate-bounce-subtle">
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+      <span class="font-semibold text-slate-200">Sesi Guru Aktif</span>
+    </div>
+    <div class="h-4 w-px bg-slate-700"></div>
+    <button onclick="switchView('admin')" class="px-3 py-1 bg-brand-600 hover:bg-brand-700 font-semibold rounded-lg transition-colors flex items-center gap-1.5">
+      <i class="fa-solid fa-gauge"></i>
+      <span>Buka Dasbor CMS</span>
+    </button>
+    <button onclick="handleAdminLogout()" title="Keluar dari sesi guru" class="text-slate-400 hover:text-red-400 p-1">
+      <i class="fa-solid fa-right-from-bracket"></i>
+    </button>
+  </div>
+
+  <!-- Toast Notification Box -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none max-w-sm">
+    <div id="toast-inner" class="flex items-center gap-3 p-4 rounded-2xl shadow-xl border bg-white border-slate-200 text-slate-800 text-sm">
+      <div id="toast-icon-wrap" class="w-8 h-8 rounded-xl flex items-center justify-center text-white bg-brand-600 shrink-0">
+        <i id="toast-icon" class="fa-solid fa-check"></i>
+      </div>
+      <div class="flex-1">
+        <p id="toast-title" class="font-bold text-xs uppercase tracking-wider text-slate-900">Pemberitahuan</p>
+        <p id="toast-message" class="text-xs text-slate-600 mt-0.5">Operasi berhasil dilaksanakan.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 1: Login Admin Guru -->
+  <div id="modal-login" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl border border-slate-100 relative">
+      <button onclick="closeModal('modal-login')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <div class="text-center mb-6">
+        <div class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center mx-auto mb-3">
+          <i class="fa-solid fa-shield-halved text-xl"></i>
+        </div>
+        <h3 class="text-xl font-bold text-slate-900">Masuk Portal Guru (CMS)</h3>
+        <p class="text-xs text-slate-500 mt-1">Gunakan kredensial akun guru untuk mengelola isi portofolio.</p>
+      </div>
+
+      <!-- Demo Info Notice -->
+      <div class="bg-brand-50 border border-brand-200 rounded-xl p-3 mb-5 text-xs text-brand-900 space-y-1">
+        <div class="font-semibold flex items-center gap-1.5">
+          <i class="fa-solid fa-circle-info text-brand-600"></i> Akun Pengujian Standar:
+        </div>
+        <div>Email: <span class="font-mono font-bold">guru@sekolah.id</span></div>
+        <div>Sandi: <span class="font-mono font-bold">guru123</span></div>
+      </div>
+
+      <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Alamat Email</label>
+          <input type="email" id="login-email" required value="guru@sekolah.id" class="w-full px-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Kata Sandi</label>
+          <input type="password" id="login-password" required value="guru123" class="w-full px-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+        </div>
+        <button type="submit" class="w-full py-3 rounded-xl bg-slate-900 text-white font-semibold text-sm hover:bg-brand-600 transition-colors">
+          Masuk ke Dasbor
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: Form Tambah/Ubah Riwayat Karir & Pendidikan -->
+  <div id="modal-career" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative">
+      <button onclick="closeModal('modal-career')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <h3 id="modal-career-title" class="text-lg font-bold text-slate-900 mb-4">Tambah Riwayat</h3>
+
+      <form onsubmit="handleSaveCareerItem(event)" class="space-y-4">
+        <input type="hidden" id="career-id">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tipe Riwayat</label>
+          <select id="career-type" class="w-full px-3.5 py-2 border rounded-xl text-sm" required>
+            <option value="pendidikan">Pendidikan Formal</option>
+            <option value="pengalaman">Pengalaman Mengajar / Kerja</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nama Institusi / Sekolah / Universitas</label>
+          <input type="text" id="career-institution" required placeholder="Contoh: Universitas Pendidikan Indonesia" class="w-full px-3.5 py-2 border rounded-xl text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Gelar atau Posisi / Jabatan</label>
+          <input type="text" id="career-role" required placeholder="Contoh: S2 Pendidikan Matematika / Guru Pamong" class="w-full px-3.5 py-2 border rounded-xl text-sm">
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tahun Mulai</label>
+            <input type="text" id="career-year-start" placeholder="Contoh: 2018" class="w-full px-3.5 py-2 border rounded-xl text-sm" required>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tahun Selesai</label>
+            <input type="text" id="career-year-end" placeholder="Contoh: 2020 / Sekarang" class="w-full px-3.5 py-2 border rounded-xl text-sm" required>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Ringkasan Deskripsi / Capaian</label>
+          <textarea id="career-desc" rows="2" placeholder="Fokus kajian, predikat kelulusan, atau peran utama..." class="w-full px-3.5 py-2 border rounded-xl text-sm"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-3">
+          <button type="button" onclick="closeModal('modal-career')" class="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 text-xs font-semibold">Batal</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-brand-600 text-white hover:bg-brand-700 text-xs font-semibold">Simpan Riwayat</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 3: Form Tambah/Ubah Modul Ajar -->
+  <div id="modal-module" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative my-8">
+      <button onclick="closeModal('modal-module')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <h3 id="modal-module-title" class="text-lg font-bold text-slate-900 mb-4">Tambah Modul Ajar Baru</h3>
+
+      <form onsubmit="handleSaveModule(event)" class="space-y-4">
+        <input type="hidden" id="module-id">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Judul Modul / Karya *</label>
+          <input type="text" id="module-title" required placeholder="Contoh: Modul Ajar Aljabar Berbasis Proyek STEAM" class="w-full px-3.5 py-2 border rounded-xl text-sm">
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Mata Pelajaran *</label>
+            <input type="text" id="module-subject" required placeholder="Contoh: Matematika" class="w-full px-3.5 py-2 border rounded-xl text-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Jenjang & Kelas *</label>
+            <input type="text" id="module-grade" required placeholder="Contoh: SMA Kelas X" class="w-full px-3.5 py-2 border rounded-xl text-sm">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Deskripsi Ringkas Materi *</label>
+          <textarea id="module-desc" rows="3" required placeholder="Tujuan pembelajaran, alur kegiatan, atau petunjuk penggunaan..." class="w-full px-3.5 py-2 border rounded-xl text-sm"></textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Perkiraan Ukuran Berkas</label>
+            <input type="text" id="module-size" placeholder="Contoh: 2.4 MB" value="2.5 MB" class="w-full px-3.5 py-2 border rounded-xl text-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Status Visibilitas</label>
+            <select id="module-status" class="w-full px-3.5 py-2 border rounded-xl text-sm">
+              <option value="publik">Publik (Tampil di Web)</option>
+              <option value="draf">Draf (Disimpan Sementara)</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tautan Berkas Modul (PDF / Cloud Link)</label>
+          <input type="text" id="module-file-url" placeholder="https://drive.google.com/... atau tautan berkas" value="https://example.com/modul-pembelajaran.pdf" class="w-full px-3.5 py-2 border rounded-xl text-sm">
+          <p class="text-[11px] text-slate-400 mt-1">Pada rilis ini pengunjung dapat mengunduh berkas langsung secara gratis.</p>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-3">
+          <button type="button" onclick="closeModal('modal-module')" class="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 text-xs font-semibold">Batal</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-brand-600 text-white hover:bg-brand-700 text-xs font-semibold">Simpan Modul</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 4: Form Tambah/Ubah Sertifikasi -->
+  <div id="modal-cert" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative">
+      <button onclick="closeModal('modal-cert')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <h3 id="modal-cert-title" class="text-lg font-bold text-slate-900 mb-4">Tambah Sertifikasi</h3>
+
+      <form onsubmit="handleSaveCert(event)" class="space-y-4">
+        <input type="hidden" id="cert-id">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nama Sertifikasi / Penghargaan *</label>
+          <input type="text" id="cert-name" required placeholder="Contoh: Sertifikat Pendidik Profesional" class="w-full px-3.5 py-2 border rounded-xl text-sm">
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Kategori</label>
+            <select id="cert-category" class="w-full px-3.5 py-2 border rounded-xl text-sm">
+              <option value="Sertifikasi Profesi">Sertifikasi Profesi</option>
+              <option value="Pelatihan Nasional">Pelatihan Nasional</option>
+              <option value="Penghargaan / Juara">Penghargaan / Juara</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tahun Perolehan</label>
+            <input type="text" id="cert-year" required placeholder="Contoh: 2023" class="w-full px-3.5 py-2 border rounded-xl text-sm">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Lembaga / Institusi Penerbit</label>
+          <input type="text" id="cert-issuer" required placeholder="Contoh: Kemendikbudristek RI" class="w-full px-3.5 py-2 border rounded-xl text-sm">
+        </div>
+
+        <div class="flex justify-end gap-3 pt-3">
+          <button type="button" onclick="closeModal('modal-cert')" class="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 text-xs font-semibold">Batal</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-brand-600 text-white hover:bg-brand-700 text-xs font-semibold">Simpan Sertifikat</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 5: Form Tambah/Ubah Galeri Foto Kegiatan -->
+  <div id="modal-gallery" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative">
+      <button onclick="closeModal('modal-gallery')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <h3 id="modal-gallery-title" class="text-lg font-bold text-slate-900 mb-4">Tambah Dokumentasi Kegiatan</h3>
+
+      <form onsubmit="handleSaveGallery(event)" class="space-y-4">
+        <input type="hidden" id="gallery-id">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Judul Kegiatan *</label>
+          <input type="text" id="gallery-title" required placeholder="Contoh: Praktikum Fisika Eksperimen Gravitasi" class="w-full px-3.5 py-2 border rounded-xl text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tanggal Pelaksanaan *</label>
+          <input type="text" id="gallery-date" required placeholder="Contoh: 14 Maret 2024" class="w-full px-3.5 py-2 border rounded-xl text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">URL Foto Dokumentasi *</label>
+          <input type="url" id="gallery-image-url" required placeholder="https://..." class="w-full px-3.5 py-2 border rounded-xl text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Keterangan / Takarir Singkat</label>
+          <textarea id="gallery-desc" rows="2" placeholder="Jelaskan ringkas interaksi siswa..." class="w-full px-3.5 py-2 border rounded-xl text-sm"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-3">
+          <button type="button" onclick="closeModal('modal-gallery')" class="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 text-xs font-semibold">Batal</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-brand-600 text-white hover:bg-brand-700 text-xs font-semibold">Simpan Foto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 6: Pratinjau & Unduh Modul untuk Pengunjung -->
+  <div id="modal-module-detail" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative">
+      <button onclick="closeModal('modal-module-detail')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <div class="flex items-center gap-2 mb-3">
+        <span id="detail-module-subject" class="px-2.5 py-1 rounded-lg bg-brand-50 text-brand-700 text-xs font-bold uppercase tracking-wider">Mapel</span>
+        <span id="detail-module-grade" class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold">Kelas</span>
+      </div>
+
+      <h3 id="detail-module-title" class="text-xl font-bold text-slate-900 mb-3">Judul Modul</h3>
+      <p id="detail-module-desc" class="text-sm text-slate-600 leading-relaxed mb-6">Deskripsi modul...</p>
+
+      <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-file-pdf"></i>
+          </div>
+          <div>
+            <span class="text-xs font-bold text-slate-900 block">Dokumen PDF Terbuka</span>
+            <span id="detail-module-size" class="text-[11px] text-slate-500">2.4 MB</span>
+          </div>
+        </div>
+        <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg">Akses Bebas</span>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button type="button" onclick="closeModal('modal-module-detail')" class="flex-1 py-3 rounded-xl border border-slate-300 text-slate-700 text-xs font-semibold hover:bg-slate-50">
+          Tutup
+        </button>
+        <button id="btn-download-module-action" onclick="executeDownloadModule()" class="flex-1 py-3 rounded-xl bg-brand-600 text-white text-xs font-semibold hover:bg-brand-700 flex items-center justify-center gap-2 shadow-md shadow-brand-600/20">
+          <i class="fa-solid fa-cloud-arrow-down"></i>
+          <span>Unduh Berkas Sekarang</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* In-Memory Database fulfilling Model Data Section 8 in the PRD */
+    const appState = {
+      // User authentication state (AUTH-1 to AUTH-4)
+      auth: {
+        isLoggedIn: false,
+        currentUser: {
+          id: 'user_01',
+          email: 'guru@sekolah.id',
+          password: 'guru123',
+          role: 'guru_admin'
+        }
+      },
+      // Profil Guru (PROF-1, PROF-2, PROF-4)
+      profil: {
+        id: 'prof_01',
+        namaLengkap: 'Budi Prasetyo, M.Pd.',
+        gelar: 'M.Pd.',
+        bidangKeahlian: 'Pendidik Matematika & Sains Inovatif',
+        biografiSingkat: 'Pendidik berdedikasi dengan pengalaman lebih dari 12 tahun dalam merancang pengalaman belajar bermakna. Berfokus pada integrasi STEAM, pembelajaran terdiferensiasi, dan literasi digital.',
+        biografiLengkap: 'Saya meyakini bahwa setiap peserta didik memiliki ritme dan potensi unik yang siap berkembang bila diberi ruang eksplorasi yang tepat. Melalui kombinasi pedagogi modern, eksperimen kontekstual, dan pemanfaatan media digital, saya bertekad menjadikan proses belajar sains dan matematika sebagai petualangan yang menyenangkan.',
+        filosofiMengajar: 'Pendidikan bukan sekadar mengisi bejana yang kosong, melainkan menyalakan api keingintahuan dan potensi bawaan peserta didik untuk menjadi pembelajar mandiri sepanjang hayat.',
+        // Foto profil bawaan dengan latar transparan (cutout profesional)
+        fotoProfilUrl: 'https://pngimg.com/d/teacher_PNG62451.png',
+        tautanLinkedin: 'https://linkedin.com',
+        tautanInstagram: 'https://instagram.com',
+        tautanYoutube: 'https://youtube.com',
+        emailKontak: 'budi.prasetyo@sekolah.id'
+      },
+      // Riwayat Karir & Pendidikan (PROF-3)
+      riwayat: [
+        {
+          id: 'rw_1',
+          tipe: 'pendidikan',
+          institusi: 'Universitas Pendidikan Indonesia (UPI)',
+          peranAtauGelar: 'Magister Pendidikan (S2) Pendidikan Matematika',
+          tahunMulai: '2016',
+          tahunSelesai: '2018',
+          deskripsi: 'Fokus tesis pada model pembelajaran berbasis pemecahan masalah (PBL) berbantuan teknologi visual.'
+        },
+        {
+          id: 'rw_2',
+          tipe: 'pendidikan',
+          institusi: 'Universitas Negeri Yogyakarta (UNY)',
+          peranAtauGelar: 'Sarjana Pendidikan (S1) Pendidikan Matematika',
+          tahunMulai: '2008',
+          tahunSelesai: '2012',
+          deskripsi: 'Lulus dengan predikat Pujian (Cum Laude). Aktif dalam organisasi penalaran sains mahasiswa.'
+        },
+        {
+          id: 'rw_3',
+          tipe: 'pengalaman',
+          institusi: 'SMA Negeri Unggulan 1 Jakarta',
+          peranAtauGelar: 'Guru Mata Pelajaran Matematika & Koordinator Kurikulum',
+          tahunMulai: '2018',
+          tahunSelesai: 'Sekarang',
+          deskripsi: 'Memimpin implementasi Kurikulum Merdeka, pembina olimpiade sains, dan koordinator proyek P5.'
+        },
+        {
+          id: 'rw_4',
+          tipe: 'pengalaman',
+          institusi: 'SMP Bintang Gemilang',
+          peranAtauGelar: 'Pendidik Sains & Matematika Dasar',
+          tahunMulai: '2012',
+          tahunSelesai: '2017',
+          deskripsi: 'Mengembangkan laboratorium mini sains kontekstual dan modul ajar praktikum ramah anak.'
+        }
+      ],
+      // Modul Ajar (MODL-1 to MODL-4, PUBL-2, PUBL-3)
+      modulAjar: [
+        {
+          id: 'mod_1',
+          judul: 'Modul Ajar Aljabar Berbasis Proyek STEAM',
+          mataPelajaran: 'Matematika',
+          jenjangKelas: 'SMA Kelas X',
+          deskripsi: 'Panduan lengkap proyek kontekstual membuat miniatur jembatan hidrolik dengan perhitungan persamaan aljabar dan fungsi kuadrat.',
+          berkasUrl: 'modul-aljabar-steam.pdf',
+          ukuranBerkas: '3.4 MB',
+          statusPublikasi: 'publik',
+          createdAt: '2024-03-10'
+        },
+        {
+          id: 'mod_2',
+          judul: 'Panduan Praktikum Sains: Eksperimen Gerak & Gaya',
+          mataPelajaran: 'Fisika & IPA Terpadu',
+          jenjangKelas: 'SMP Kelas VIII',
+          deskripsi: 'Lembar kerja eksperimen gerak lurus menggunakan bahan sederhana di lingkungan sekitar rumah dan sekolah.',
+          berkasUrl: 'praktikum-gerak-lurus.pdf',
+          ukuranBerkas: '2.1 MB',
+          statusPublikasi: 'publik',
+          createdAt: '2024-04-02'
+        },
+        {
+          id: 'mod_3',
+          judul: 'Rubrik Asesmen Diagnostik Awal Tahun Pelajaran',
+          mataPelajaran: 'Pedagogik Umum',
+          jenjangKelas: 'Lintas Jenjang SMP-SMA',
+          deskripsi: 'Instrumen survei gaya belajar, kesiapan kognitif dasar, dan pemetaan emosional peserta didik sebelum pembelajaran dimulai.',
+          berkasUrl: 'asesmen-diagnostik-literasi.pdf',
+          ukuranBerkas: '1.8 MB',
+          statusPublikasi: 'publik',
+          createdAt: '2024-05-15'
+        },
+        {
+          id: 'mod_4',
+          judul: 'Kumpulan Soal Latihan Olimpiade Matematika (Draf Review)',
+          mataPelajaran: 'Matematika Tingkat Lanjut',
+          jenjangKelas: 'SMA Kelas XI - XII',
+          deskripsi: 'Bank soal pembinaan kompetisi sains nasional beserta pembahasan langkah demi langkah.',
+          berkasUrl: 'olimpiade-math-draft.pdf',
+          ukuranBerkas: '4.2 MB',
+          statusPublikasi: 'draf',
+          createdAt: '2024-05-20'
+        }
+      ],
+      // Sertifikasi & Penghargaan (SERT-1 to SERT-3, PUBL-4)
+      sertifikasi: [
+        {
+          id: 'cert_1',
+          judulPenghargaan: 'Sertifikasi Pendidik Profesional (Gr.)',
+          kategori: 'Sertifikasi Profesi',
+          institusiPenerbit: 'Kemendikbudristek RI',
+          tahunPerolehan: '2019'
+        },
+        {
+          id: 'cert_2',
+          judulPenghargaan: 'Google Certified Educator Level 2',
+          kategori: 'Pelatihan Nasional',
+          institusiPenerbit: 'Google for Education',
+          tahunPerolehan: '2022'
+        },
+        {
+          id: 'cert_3',
+          judulPenghargaan: 'Juara 1 Guru Inovatif Tingkat Provinsi',
+          kategori: 'Penghargaan / Juara',
+          institusiPenerbit: 'Dinas Pendidikan Daerah',
+          tahunPerolehan: '2023'
+        }
+      ],
+      // Galeri Kegiatan (GALR-1 to GALR-3, PUBL-4)
+      galeri: [
+        {
+          id: 'gal_1',
+          judulKegiatan: 'Eksplorasi Praktik Pemodelan Roket Air',
+          tanggal: '12 Februari 2024',
+          deskripsi: 'Siswa kelas X mendemonstrasikan prinsip tekanan udara dan hukum Newton di lapangan sekolah.',
+          fotoUrl: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&auto=format&fit=crop&q=80'
+        },
+        {
+          id: 'gal_2',
+          judulKegiatan: 'Lokakarya Kolaboratif Pembuatan Modul Ajar',
+          tanggal: '28 Maret 2024',
+          deskripsi: 'Berbagi praktik baik perancangan modul ajar berdiferensiasi bersama MGMP Matematika.',
+          fotoUrl: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&auto=format&fit=crop&q=80'
+        },
+        {
+          id: 'gal_3',
+          judulKegiatan: 'Bimbingan Siswa Persiapan Olimpiade Sains',
+          tanggal: '05 Mei 2024',
+          deskripsi: 'Sesi bimbingan intensif dan pemecahan masalah non-rutin bersama tim olimpiade sekolah.',
+          fotoUrl: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=600&auto=format&fit=crop&q=80'
+        }
+      ],
+      // Pesan Kontak (KNTK-1 to KNTK-4)
+      pesanKontak: [
+        {
+          id: 'msg_1',
+          nama: 'Dra. Sri Wahyuni',
+          email: 'sri.wahyuni@sman1jogja.sch.id',
+          subjek: 'Undangan Menjadi Narasumber Workshop STEAM',
+          pesan: 'Selamat siang Bapak Budi. Kami dari tim kurikulum SMAN 1 bermaksud mengundang Bapak untuk berbagi praktik baik integrasi STEAM pada lokakarya semester depan. Mohon informasi ketersediaan jadwal Bapak.',
+          statusBaca: 'belum_dibaca',
+          createdAt: '24 Mei 2024, 09:30'
+        },
+        {
+          id: 'msg_2',
+          nama: 'Bambang Sudibyo (Wali Murid)',
+          email: 'bambang.s@gmail.com',
+          subjek: 'Apresiasi Modul Belajar Aljabar',
+          pesan: 'Terima kasih banyak atas modul ajar yang dibagikan secara terbuka di web ini. Anak kami menjadi lebih paham dan antusias belajar matematika secara mandiri di rumah.',
+          statusBaca: 'sudah_dibaca',
+          createdAt: '22 Mei 2024, 14:15'
+        }
+      ],
+      currentViewingModule: null
+    };
+
+    // Toast Notification System
+    function showToast(message, title = "Sukses", type = "success") {
+      const toast = document.getElementById('toast');
+      const toastTitle = document.getElementById('toast-title');
+      const toastMessage = document.getElementById('toast-message');
+      const iconWrap = document.getElementById('toast-icon-wrap');
+      const toastIcon = document.getElementById('toast-icon');
+
+      toastTitle.innerText = title;
+      toastMessage.innerText = message;
+
+      if (type === "success") {
+        iconWrap.className = "w-8 h-8 rounded-xl flex items-center justify-center text-white bg-emerald-600 shrink-0";
+        toastIcon.className = "fa-solid fa-check";
+      } else if (type === "error") {
+        iconWrap.className = "w-8 h-8 rounded-xl flex items-center justify-center text-white bg-rose-600 shrink-0";
+        toastIcon.className = "fa-solid fa-triangle-exclamation";
+      } else {
+        iconWrap.className = "w-8 h-8 rounded-xl flex items-center justify-center text-white bg-blue-600 shrink-0";
+        toastIcon.className = "fa-solid fa-circle-info";
+      }
+
+      toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+      }, 3500);
+    }
+
+    // Modal Handlers
+    function openModal(modalId) {
+      const el = document.getElementById(modalId);
+      if (el) {
+        el.classList.remove('hidden');
+        el.classList.add('modal-active');
+      }
+    }
+
+    function closeModal(modalId) {
+      const el = document.getElementById(modalId);
+      if (el) {
+        el.classList.add('hidden');
+        el.classList.remove('modal-active');
+      }
+    }
+
+    // Switch between Public View and Admin CMS View
+    function switchView(view) {
+      const publicView = document.getElementById('view-public');
+      const adminView = document.getElementById('view-admin');
+      const adminFloatingBar = document.getElementById('admin-floating-bar');
+
+      if (view === 'admin') {
+        publicView.classList.add('hidden');
+        adminView.classList.remove('hidden');
+        if (adminFloatingBar) adminFloatingBar.classList.add('hidden');
+        renderAdminDashboard();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        adminView.classList.add('hidden');
+        publicView.classList.remove('hidden');
+        
+        // Tampilkan floating bar hanya jika guru dalam keadaan login
+        if (adminFloatingBar) {
+          if (appState.auth.isLoggedIn) {
+            adminFloatingBar.classList.remove('hidden');
+          } else {
+            adminFloatingBar.classList.add('hidden');
+          }
+        }
+        
+        renderPublicView();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function handlePortalSwitch() {
+      if (appState.auth.isLoggedIn) {
+        const isAdminVisible = !document.getElementById('view-admin').classList.contains('hidden');
+        switchView(isAdminVisible ? 'public' : 'admin');
+      } else {
+        openModal('modal-login');
+      }
+    }
+
+    // Pemicu rahasia untuk perangkat seluler / sentuh: ketuk logo 3x cepat
+    let secretLogoClicks = 0;
+    let secretLogoTimeout = null;
+
+    function handleSecretLogoClick(e) {
+      secretLogoClicks++;
+      clearTimeout(secretLogoTimeout);
+
+      if (secretLogoClicks >= 3) {
+        e.preventDefault();
+        secretLogoClicks = 0;
+        handlePortalSwitch();
+        return;
+      }
+
+      secretLogoTimeout = setTimeout(() => {
+        secretLogoClicks = 0;
+      }, 700);
+    }
+
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    }
+
+    function renderPublicView() {
+      const prof = appState.profil;
+
+      // Update Navigation & Branding
+      document.getElementById('nav-teacher-name').innerText = prof.namaLengkap;
+      document.getElementById('footer-teacher-name').innerText = prof.namaLengkap;
+      document.getElementById('footer-year').innerText = new Date().getFullYear();
+
+      // Update Hero Section
+      document.getElementById('hero-bio').innerText = prof.biografiSingkat;
+      document.getElementById('hero-photo').src = prof.fotoProfilUrl;
+      document.getElementById('hero-photo').onerror = function() {
+        this.src = 'https://pngimg.com/d/teacher_PNG62433.png';
+      };
+
+      // Update Mini Badges di Hero
+      const heroBadgeName = document.getElementById('hero-name-badge');
+      if (heroBadgeName) heroBadgeName.innerText = prof.namaLengkap;
+
+      // Philosophy & Details
+      document.getElementById('profile-philosophy').innerText = `"${prof.filosofiMengajar}"`;
+      document.getElementById('profile-full-bio').innerText = prof.biografiLengkap;
+      document.getElementById('contact-email-label').innerText = prof.emailKontak;
+
+      // Stats
+      const publicModules = appState.modulAjar.filter(m => m.statusPublikasi === 'publik');
+      document.getElementById('stat-modules-count').innerText = publicModules.length;
+      document.getElementById('stat-certs-count').innerText = appState.sertifikasi.length;
+
+      // Render Career & Education Timeline
+      renderPublicCareerTimeline();
+
+      // Render Modules Catalogue
+      renderPublicModules(publicModules);
+
+      // Render Certifications Grid
+      renderPublicCertifications();
+
+      // Render Activity Gallery
+      renderPublicGallery();
+    }
+
+    function renderPublicCareerTimeline() {
+      const eduList = document.getElementById('list-public-education');
+      const expList = document.getElementById('list-public-experience');
+
+      const educations = appState.riwayat.filter(item => item.tipe === 'pendidikan');
+      const experiences = appState.riwayat.filter(item => item.tipe === 'pengalaman');
+
+      eduList.innerHTML = educations.map(edu => `
+        <div class="relative pl-6 border-l-2 border-brand-200">
+          <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-white border-4 border-brand-600"></div>
+          <span class="text-xs font-bold text-brand-700 bg-brand-50 px-2 py-0.5 rounded">${edu.tahunMulai} — ${edu.tahunSelesai}</span>
+          <h4 class="text-sm font-bold text-slate-900 mt-1">${edu.peranAtauGelar}</h4>
+          <p class="text-xs font-semibold text-slate-600">${edu.institusi}</p>
+          <p class="text-xs text-slate-500 mt-1">${edu.deskripsi || ''}</p>
+        </div>
+      `).join('') || '<p class="text-xs text-slate-400">Belum ada data pendidikan.</p>';
+
+      expList.innerHTML = experiences.map(exp => `
+        <div class="relative pl-6 border-l-2 border-indigo-200">
+          <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-white border-4 border-indigo-600"></div>
+          <span class="text-xs font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded">${exp.tahunMulai} — ${exp.tahunSelesai}</span>
+          <h4 class="text-sm font-bold text-slate-900 mt-1">${exp.peranAtauGelar}</h4>
+          <p class="text-xs font-semibold text-slate-600">${exp.institusi}</p>
+          <p class="text-xs text-slate-500 mt-1">${exp.deskripsi || ''}</p>
+        </div>
+      `).join('') || '<p class="text-xs text-slate-400">Belum ada data pengalaman kerja.</p>';
+    }
+
+    function renderPublicModules(modulesToRender) {
+      const container = document.getElementById('grid-public-modules');
+      const emptyState = document.getElementById('empty-module-search');
+
+      if (!modulesToRender.length) {
+        container.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      container.innerHTML = modulesToRender.map(item => `
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="px-2.5 py-1 rounded-lg bg-brand-50 text-brand-700 text-xs font-bold uppercase tracking-wider">${item.mataPelajaran}</span>
+              <span class="text-xs text-slate-400 font-medium">${item.jenjangKelas}</span>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 group-hover:text-brand-600 transition-colors line-clamp-2">${item.judul}</h3>
+            <p class="text-xs text-slate-600 mt-2 line-clamp-3 leading-relaxed">${item.deskripsi}</p>
+          </div>
+
+          <div class="pt-5 mt-5 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-xs text-slate-400 flex items-center gap-1.5">
+              <i class="fa-solid fa-file-lines text-slate-400"></i> ${item.ukuranBerkas}
+            </span>
+            <button onclick="openModuleDetailModal('${item.id}')" class="px-3.5 py-1.5 rounded-xl bg-slate-900 group-hover:bg-brand-600 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors">
+              <i class="fa-solid fa-eye"></i> Detail & Unduh
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function handleFilterModules() {
+      const keyword = document.getElementById('input-search-module').value.toLowerCase();
+      const filtered = appState.modulAjar.filter(m => 
+        m.statusPublikasi === 'publik' && 
+        (m.judul.toLowerCase().includes(keyword) || m.mataPelajaran.toLowerCase().includes(keyword) || m.jenjangKelas.toLowerCase().includes(keyword))
+      );
+      renderPublicModules(filtered);
+    }
+
+    function openModuleDetailModal(moduleId) {
+      const module = appState.modulAjar.find(m => m.id === moduleId);
+      if (!module) return;
+
+      appState.currentViewingModule = module;
+      document.getElementById('detail-module-title').innerText = module.judul;
+      document.getElementById('detail-module-subject').innerText = module.mataPelajaran;
+      document.getElementById('detail-module-grade').innerText = module.jenjangKelas;
+      document.getElementById('detail-module-desc').innerText = module.deskripsi;
+      document.getElementById('detail-module-size').innerText = module.ukuranBerkas;
+
+      openModal('modal-module-detail');
+    }
+
+    function executeDownloadModule() {
+      if (!appState.currentViewingModule) return;
+      const mod = appState.currentViewingModule;
+
+      // Simulate instantaneous client-side download generation
+      const fakePdfContent = `DOKUMEN MODUL AJAR RESMI\nJudul: ${mod.judul}\nPenyusun: ${appState.profil.namaLengkap}\nMata Pelajaran: ${mod.mataPelajaran}\nJenjang: ${mod.jenjangKelas}\n\nDeskripsi:\n${mod.deskripsi}\n\n(Berkas portofolio terbuka untuk tujuan pendidikan).`;
+      const blob = new Blob([fakePdfContent], { type: 'text/plain;charset=utf-8' });
+      const downloadLink = document.createElement('a');
+      downloadLink.href = URL.createObjectURL(blob);
+      downloadLink.download = `${mod.judul.toLowerCase().replace(/\s+/g, '-')}.txt`;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+
+      closeModal('modal-module-detail');
+      showToast(`Berkas "${mod.judul}" berhasil diunduh ke perangkat Anda.`, 'Unduhan Sukses');
+    }
+
+    function renderPublicCertifications() {
+      const container = document.getElementById('grid-public-certifications');
+      container.innerHTML = appState.sertifikasi.map(cert => `
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex items-start gap-4">
+          <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 text-xl">
+            <i class="fa-solid fa-certificate"></i>
+          </div>
+          <div>
+            <span class="text-[11px] font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md">${cert.kategori}</span>
+            <h4 class="text-sm font-bold text-slate-900 mt-1">${cert.judulPenghargaan}</h4>
+            <p class="text-xs text-slate-500 mt-0.5">${cert.institusiPenerbit} &bull; ${cert.tahunPerolehan}</p>
+          </div>
+        </div>
+      `).join('') || '<p class="text-xs text-slate-400">Belum ada sertifikasi yang ditambahkan.</p>';
+    }
+
+    function renderPublicGallery() {
+      const container = document.getElementById('grid-public-gallery');
+      container.innerHTML = appState.galeri.map(gal => `
+        <div class="bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-sm group">
+          <div class="relative overflow-hidden h-48 bg-slate-100">
+            <img src="${gal.fotoUrl}" alt="${gal.judulKegiatan}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/600x400/e2e8f0/475569?text=Dokumentasi+Kelas'">
+            <span class="absolute bottom-3 left-3 bg-slate-900/80 backdrop-blur-sm text-white text-[11px] font-semibold px-2.5 py-1 rounded-lg">
+              <i class="fa-regular fa-calendar mr-1"></i> ${gal.tanggal}
+            </span>
+          </div>
+          <div class="p-5">
+            <h4 class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition-colors">${gal.judulKegiatan}</h4>
+            <p class="text-xs text-slate-500 mt-1 line-clamp-2">${gal.deskripsi || ''}</p>
+          </div>
+        </div>
+      `).join('') || '<p class="text-xs text-slate-400">Belum ada dokumentasi foto kegiatan.</p>';
+    }
+
+    function handleSendPublicMessage(e) {
+      e.preventDefault();
+      const name = document.getElementById('contact-sender-name').value.trim();
+      const email = document.getElementById('contact-sender-email').value.trim();
+      const subject = document.getElementById('contact-sender-subject').value.trim();
+      const message = document.getElementById('contact-sender-message').value.trim();
+
+      if (!name || !email || !subject || !message) {
+        showToast('Mohon lengkapi seluruh kolom formulir.', 'Form Belum Lengkap', 'error');
+        return;
+      }
+
+      // Basic email validation regex
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        showToast('Format alamat email tidak valid.', 'Format Keliru', 'error');
+        return;
+      }
+
+      const newMsg = {
+        id: 'msg_' + Date.now(),
+        nama: name,
+        email: email,
+        subjek: subject,
+        pesan: message,
+        statusBaca: 'belum_dibaca',
+        createdAt: 'Hari ini, ' + new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+      };
+
+      appState.pesanKontak.unshift(newMsg);
+      document.getElementById('form-contact-public').reset();
+      showToast('Pesan Anda berhasil dikirimkan kepada guru. Terima kasih!', 'Pesan Terkirim', 'success');
+
+      // Update badge if any
+      updateUnreadMessageBadge();
+    }
+
+    function handleAdminLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      const pass = document.getElementById('login-password').value;
+
+      if (email === appState.auth.currentUser.email && pass === appState.auth.currentUser.password) {
+        appState.auth.isLoggedIn = true;
+        closeModal('modal-login');
+        showToast('Berhasil masuk ke dasbor pengelolaan portofolio.', 'Selamat Datang, Guru!');
+        switchView('admin');
+      } else {
+        showToast('Email atau kata sandi tidak cocok. Silakan coba kembali.', 'Akses Ditolak', 'error');
+      }
+    }
+
+    function handleAdminLogout() {
+      appState.auth.isLoggedIn = false;
+      const adminFloatingBar = document.getElementById('admin-floating-bar');
+      if (adminFloatingBar) adminFloatingBar.classList.add('hidden');
+
+      showToast('Anda telah keluar dari panel admin guru.', 'Sesi Berakhir', 'info');
+      switchView('public');
+    }
+
+    function handleChangePassword(e) {
+      e.preventDefault();
+      const oldPass = document.getElementById('adm-old-password').value;
+      const newPass = document.getElementById('adm-new-password').value;
+
+      if (oldPass !== appState.auth.currentUser.password) {
+        showToast('Kata sandi lama Anda tidak sesuai.', 'Gagal Mengubah Sandi', 'error');
+        return;
+      }
+
+      if (newPass.length < 6) {
+        showToast('Kata sandi baru minimal harus 6 karakter.', 'Peringatan Sandi', 'error');
+        return;
+      }
+
+      appState.auth.currentUser.password = newPass;
+      document.getElementById('adm-old-password').value = '';
+      document.getElementById('adm-new-password').value = '';
+      showToast('Kata sandi admin berhasil diperbarui.', 'Keamanan Terupdate', 'success');
+    }
+
+    function setAdminTab(targetTabId) {
+      document.querySelectorAll('.admin-tab-panel').forEach(panel => panel.classList.add('hidden'));
+      document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+        btn.classList.remove('border-brand-600', 'text-brand-600');
+        btn.classList.add('border-transparent', 'text-slate-500');
+      });
+
+      const activePanel = document.getElementById(targetTabId);
+      if (activePanel) activePanel.classList.remove('hidden');
+
+      const activeBtn = document.getElementById(`btn-${targetTabId}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('border-transparent', 'text-slate-500');
+        activeBtn.classList.add('border-brand-600', 'text-brand-600');
+      }
+    }
+
+    function updateUnreadMessageBadge() {
+      const unread = appState.pesanKontak.filter(m => m.statusBaca === 'belum_dibaca').length;
+      const badge = document.getElementById('unread-badge-tab');
+      if (unread > 0) {
+        badge.innerText = unread;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+
+    function renderAdminDashboard() {
+      const prof = appState.profil;
+
+      // Populate form fields
+      document.getElementById('adm-prof-name').value = prof.namaLengkap;
+      document.getElementById('adm-prof-subject').value = prof.bidangKeahlian;
+      document.getElementById('adm-prof-bio').value = prof.biografiSingkat;
+      document.getElementById('adm-prof-philosophy').value = prof.filosofiMengajar;
+      document.getElementById('adm-prof-linkedin').value = prof.tautanLinkedin;
+      document.getElementById('adm-prof-instagram').value = prof.tautanInstagram;
+      document.getElementById('adm-prof-youtube').value = prof.tautanYoutube;
+      document.getElementById('adm-prof-email').value = prof.emailKontak;
+      document.getElementById('adm-account-email').value = appState.auth.currentUser.email;
+
+      // Perbarui pratinjau foto di panel admin
+      const previewEl = document.getElementById('adm-prof-photo-preview');
+      if (previewEl) previewEl.src = prof.fotoProfilUrl;
+
+      renderAdminCareerTable();
+      renderAdminModulesTable();
+      renderAdminCertsTable();
+      renderAdminGalleryGrid();
+      renderAdminMessages();
+      updateUnreadMessageBadge();
+    }
+
+    /* ========================================================================== */
+    /* PENGELOLAAN FOTO PROFIL LANGSUNG                                           */
+    /* ========================================================================== */
+    function handleProfilePhotoUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const photoDataUrl = evt.target.result;
+        appState.profil.fotoProfilUrl = photoDataUrl;
+
+        // Perbarui foto di halaman depan (hero)
+        const heroPhoto = document.getElementById('hero-photo');
+        if (heroPhoto) heroPhoto.src = photoDataUrl;
+
+        // Perbarui pratinjau di dalam form admin
+        const previewEl = document.getElementById('adm-prof-photo-preview');
+        if (previewEl) previewEl.src = photoDataUrl;
+
+        showToast('Foto profil baru berhasil diunggah dan diterapkan!', 'Foto Diperbarui', 'success');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleSaveProfile(e) {
+      e.preventDefault();
+      appState.profil.namaLengkap = document.getElementById('adm-prof-name').value.trim();
+      appState.profil.bidangKeahlian = document.getElementById('adm-prof-subject').value.trim();
+      appState.profil.biografiSingkat = document.getElementById('adm-prof-bio').value.trim();
+      appState.profil.filosofiMengajar = document.getElementById('adm-prof-philosophy').value.trim();
+      appState.profil.tautanLinkedin = document.getElementById('adm-prof-linkedin').value.trim();
+      appState.profil.tautanInstagram = document.getElementById('adm-prof-instagram').value.trim();
+      appState.profil.tautanYoutube = document.getElementById('adm-prof-youtube').value.trim();
+      appState.profil.emailKontak = document.getElementById('adm-prof-email').value.trim();
+
+      showToast('Profil guru berhasil disimpan dan langsung diperbarui.', 'Profil Disimpan', 'success');
+      renderPublicView();
+    }
+
+    /* Career Admin Management */
+    function renderAdminCareerTable() {
+      const tbody = document.getElementById('adm-career-tbody');
+      tbody.innerHTML = appState.riwayat.map(item => `
+        <tr class="hover:bg-slate-50 transition-colors">
+          <td class="p-3">
+            <span class="capitalize px-2 py-0.5 rounded text-[11px] font-bold ${item.tipe === 'pendidikan' ? 'bg-brand-50 text-brand-700' : 'bg-indigo-50 text-indigo-700'}">
+              ${item.tipe}
+            </span>
+          </td>
+          <td class="p-3 font-semibold text-slate-800">${item.institusi}</td>
+          <td class="p-3 text-slate-600">${item.peranAtauGelar}</td>
+          <td class="p-3 text-slate-500">${item.tahunMulai} — ${item.tahunSelesai}</td>
+          <td class="p-3 text-right space-x-1">
+            <button onclick="editCareerItem('${item.id}')" class="p-1.5 text-slate-500 hover:text-brand-600 hover:bg-slate-100 rounded-lg">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button onclick="deleteCareerItem('${item.id}')" class="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('') || '<tr><td colspan="5" class="p-4 text-center text-slate-400">Belum ada riwayat.</td></tr>';
+    }
+
+    function openModalCareerItem() {
+      document.getElementById('career-id').value = '';
+      document.getElementById('career-type').value = 'pendidikan';
+      document.getElementById('career-institution').value = '';
+      document.getElementById('career-role').value = '';
+      document.getElementById('career-year-start').value = '';
+      document.getElementById('career-year-end').value = '';
+      document.getElementById('career-desc').value = '';
+      document.getElementById('modal-career-title').innerText = 'Tambah Riwayat Baru';
+      openModal('modal-career');
+    }
+
+    function editCareerItem(id) {
+      const item = appState.riwayat.find(r => r.id === id);
+      if (!item) return;
+
+      document.getElementById('career-id').value = item.id;
+      document.getElementById('career-type').value = item.tipe;
+      document.getElementById('career-institution').value = item.institusi;
+      document.getElementById('career-role').value = item.peranAtauGelar;
+      document.getElementById('career-year-start').value = item.tahunMulai;
+      document.getElementById('career-year-end').value = item.tahunSelesai;
+      document.getElementById('career-desc').value = item.deskripsi || '';
+      document.getElementById('modal-career-title').innerText = 'Ubah Riwayat';
+      openModal('modal-career');
+    }
+
+    function handleSaveCareerItem(e) {
+      e.preventDefault();
+      const id = document.getElementById('career-id').value;
+      const data = {
+        tipe: document.getElementById('career-type').value,
+        institusi: document.getElementById('career-institution').value.trim(),
+        peranAtauGelar: document.getElementById('career-role').value.trim(),
+        tahunMulai: document.getElementById('career-year-start').value.trim(),
+        tahunSelesai: document.getElementById('career-year-end').value.trim(),
+        deskripsi: document.getElementById('career-desc').value.trim()
+      };
+
+      if (id) {
+        const index = appState.riwayat.findIndex(r => r.id === id);
+        if (index !== -1) appState.riwayat[index] = { ...appState.riwayat[index], ...data };
+        showToast('Riwayat berhasil diperbarui.', 'Tersimpan');
+      } else {
+        appState.riwayat.push({ id: 'rw_' + Date.now(), ...data });
+        showToast('Riwayat baru berhasil ditambahkan.', 'Tersimpan');
+      }
+
+      closeModal('modal-career');
+      renderAdminCareerTable();
+      renderPublicCareerTimeline();
+    }
+
+    function deleteCareerItem(id) {
+      appState.riwayat = appState.riwayat.filter(r => r.id !== id);
+      showToast('Riwayat telah dihapus.', 'Dihapus', 'info');
+      renderAdminCareerTable();
+      renderPublicCareerTimeline();
+    }
+
+    /* Modules Admin Management */
+    function renderAdminModulesTable() {
+      const tbody = document.getElementById('adm-modules-tbody');
+      tbody.innerHTML = appState.modulAjar.map(mod => `
+        <tr class="hover:bg-slate-50 transition-colors">
+          <td class="p-3 font-semibold text-slate-900">${mod.judul}</td>
+          <td class="p-3 text-slate-600">${mod.mataPelajaran}</td>
+          <td class="p-3 text-slate-500">${mod.jenjangKelas}</td>
+          <td class="p-3 text-slate-400">${mod.ukuranBerkas}</td>
+          <td class="p-3">
+            <span class="px-2 py-0.5 rounded text-[11px] font-bold ${mod.statusPublikasi === 'publik' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+              ${mod.statusPublikasi === 'publik' ? 'Publik' : 'Draf'}
+            </span>
+          </td>
+          <td class="p-3 text-right space-x-1">
+            <button onclick="toggleModuleVisibility('${mod.id}')" title="Ubah Visibilitas" class="p-1.5 text-slate-500 hover:text-brand-600 hover:bg-slate-100 rounded-lg">
+              <i class="fa-solid ${mod.statusPublikasi === 'publik' ? 'fa-eye' : 'fa-eye-slash'}"></i>
+            </button>
+            <button onclick="editModule('${mod.id}')" title="Ubah Data" class="p-1.5 text-slate-500 hover:text-brand-600 hover:bg-slate-100 rounded-lg">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button onclick="deleteModule('${mod.id}')" title="Hapus Modul" class="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('') || '<tr><td colspan="6" class="p-4 text-center text-slate-400">Belum ada modul yang diunggah.</td></tr>';
+    }
+
+    function openModalModule() {
+      document.getElementById('module-id').value = '';
+      document.getElementById('module-title').value = '';
+      document.getElementById('module-subject').value = '';
+      document.getElementById('module-grade').value = '';
+      document.getElementById('module-desc').value = '';
+      document.getElementById('module-size').value = '2.5 MB';
+      document.getElementById('module-status').value = 'publik';
+      document.getElementById('module-file-url').value = 'https://example.com/modul-pembelajaran.pdf';
+      document.getElementById('modal-module-title').innerText = 'Tambah Modul Ajar Baru';
+      openModal('modal-module');
+    }
+
+    function editModule(id) {
+      const mod = appState.modulAjar.find(m => m.id === id);
+      if (!mod) return;
+
+      document.getElementById('module-id').value = mod.id;
+      document.getElementById('module-title').value = mod.judul;
+      document.getElementById('module-subject').value = mod.mataPelajaran;
+      document.getElementById('module-grade').value = mod.jenjangKelas;
+      document.getElementById('module-desc').value = mod.deskripsi;
+      document.getElementById('module-size').value = mod.ukuranBerkas;
+      document.getElementById('module-status').value = mod.statusPublikasi;
+      document.getElementById('module-file-url').value = mod.berkasUrl;
+      document.getElementById('modal-module-title').innerText = 'Ubah Informasi Modul';
+      openModal('modal-module');
+    }
+
+    function handleSaveModule(e) {
+      e.preventDefault();
+      const id = document.getElementById('module-id').value;
+      const data = {
+        judul: document.getElementById('module-title').value.trim(),
+        mataPelajaran: document.getElementById('module-subject').value.trim(),
+        jenjangKelas: document.getElementById('module-grade').value.trim(),
+        deskripsi: document.getElementById('module-desc').value.trim(),
+        ukuranBerkas: document.getElementById('module-size').value.trim() || '2.0 MB',
+        statusPublikasi: document.getElementById('module-status').value,
+        berkasUrl: document.getElementById('module-file-url').value.trim() || 'https://example.com/modul.pdf'
+      };
+
+      if (id) {
+        const index = appState.modulAjar.findIndex(m => m.id === id);
+        if (index !== -1) appState.modulAjar[index] = { ...appState.modulAjar[index], ...data, updatedAt: new Date().toISOString() };
+        showToast('Modul ajar berhasil diperbarui.', 'Tersimpan');
+      } else {
+        appState.modulAjar.unshift({ id: 'mod_' + Date.now(), ...data, createdAt: new Date().toISOString() });
+        showToast('Modul ajar baru berhasil dipublikasikan.', 'Modul Diterbitkan');
+      }
+
+      closeModal('modal-module');
+      renderAdminModulesTable();
+      renderPublicView();
+    }
+
+    function toggleModuleVisibility(id) {
+      const mod = appState.modulAjar.find(m => m.id === id);
+      if (!mod) return;
+      mod.statusPublikasi = mod.statusPublikasi === 'publik' ? 'draf' : 'publik';
+      showToast(`Status modul diubah menjadi "${mod.statusPublikasi}".`, 'Visibilitas Diperbarui');
+      renderAdminModulesTable();
+      renderPublicView();
+    }
+
+    function deleteModule(id) {
+      appState.modulAjar = appState.modulAjar.filter(m => m.id !== id);
+      showToast('Modul ajar telah dihapus dari sistem.', 'Dihapus', 'info');
+      renderAdminModulesTable();
+      renderPublicView();
+    }
+
+    /* Certifications Admin Management */
+    function renderAdminCertsTable() {
+      const tbody = document.getElementById('adm-certs-tbody');
+      tbody.innerHTML = appState.sertifikasi.map(cert => `
+        <tr class="hover:bg-slate-50 transition-colors">
+          <td class="p-3 font-semibold text-slate-900">${cert.judulPenghargaan}</td>
+          <td class="p-3 text-slate-600">${cert.kategori}</td>
+          <td class="p-3 text-slate-600">${cert.institusiPenerbit}</td>
+          <td class="p-3 text-slate-500">${cert.tahunPerolehan}</td>
+          <td class="p-3 text-right space-x-1">
+            <button onclick="editCert('${cert.id}')" class="p-1.5 text-slate-500 hover:text-brand-600 hover:bg-slate-100 rounded-lg">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button onclick="deleteCert('${cert.id}')" class="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('') || '<tr><td colspan="5" class="p-4 text-center text-slate-400">Belum ada sertifikasi.</td></tr>';
+    }
+
+    function openModalCert() {
+      document.getElementById('cert-id').value = '';
+      document.getElementById('cert-name').value = '';
+      document.getElementById('cert-category').value = 'Sertifikasi Profesi';
+      document.getElementById('cert-year').value = new Date().getFullYear();
+      document.getElementById('cert-issuer').value = '';
+      document.getElementById('modal-cert-title').innerText = 'Tambah Sertifikasi';
+      openModal('modal-cert');
+    }
+
+    function editCert(id) {
+      const cert = appState.sertifikasi.find(c => c.id === id);
+      if (!cert) return;
+
+      document.getElementById('cert-id').value = cert.id;
+      document.getElementById('cert-name').value = cert.judulPenghargaan;
+      document.getElementById('cert-category').value = cert.kategori;
+      document.getElementById('cert-year').value = cert.tahunPerolehan;
+      document.getElementById('cert-issuer').value = cert.institusiPenerbit;
+      document.getElementById('modal-cert-title').innerText = 'Ubah Sertifikasi';
+      openModal('modal-cert');
+    }
+
+    function handleSaveCert(e) {
+      e.preventDefault();
+      const id = document.getElementById('cert-id').value;
+      const data = {
+        judulPenghargaan: document.getElementById('cert-name').value.trim(),
+        kategori: document.getElementById('cert-category').value,
+        tahunPerolehan: document.getElementById('cert-year').value.trim(),
+        institusiPenerbit: document.getElementById('cert-issuer').value.trim()
+      };
+
+      if (id) {
+        const index = appState.sertifikasi.findIndex(c => c.id === id);
+        if (index !== -1) appState.sertifikasi[index] = { ...appState.sertifikasi[index], ...data };
+        showToast('Sertifikasi diperbarui.', 'Tersimpan');
+      } else {
+        appState.sertifikasi.push({ id: 'cert_' + Date.now(), ...data });
+        showToast('Sertifikasi baru ditambahkan.', 'Tersimpan');
+      }
+
+      closeModal('modal-cert');
+      renderAdminCertsTable();
+      renderPublicCertifications();
+    }
+
+    function deleteCert(id) {
+      appState.sertifikasi = appState.sertifikasi.filter(c => c.id !== id);
+      showToast('Sertifikasi dihapus.', 'Dihapus', 'info');
+      renderAdminCertsTable();
+      renderPublicCertifications();
+    }
+
+    /* Gallery Admin Management */
+    function renderAdminGalleryGrid() {
+      const container = document.getElementById('adm-gallery-grid');
+      container.innerHTML = appState.galeri.map(gal => `
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 flex flex-col justify-between">
+          <div>
+            <img src="${gal.fotoUrl}" alt="${gal.judulKegiatan}" class="w-full h-32 object-cover rounded-xl mb-2" onerror="this.src='https://placehold.co/400x300/e2e8f0/475569?text=Foto'">
+            <h4 class="font-bold text-xs text-slate-800 line-clamp-1">${gal.judulKegiatan}</h4>
+            <span class="text-[10px] text-slate-400 block">${gal.tanggal}</span>
+          </div>
+          <div class="pt-3 mt-2 border-t border-slate-200/60 flex items-center justify-end gap-1">
+            <button onclick="editGallery('${gal.id}')" class="p-1.5 text-slate-500 hover:text-brand-600 rounded">
+              <i class="fa-solid fa-pen-to-square text-xs"></i>
+            </button>
+            <button onclick="deleteGallery('${gal.id}')" class="p-1.5 text-slate-500 hover:text-rose-600 rounded">
+              <i class="fa-solid fa-trash-can text-xs"></i>
+            </button>
+          </div>
+        </div>
+      `).join('') || '<p class="text-xs text-slate-400 col-span-4 text-center py-6">Belum ada foto galeri.</p>';
+    }
+
+    function openModalGallery() {
+      document.getElementById('gallery-id').value = '';
+      document.getElementById('gallery-title').value = '';
+      document.getElementById('gallery-date').value = '10 Mei 2024';
+      document.getElementById('gallery-image-url').value = '';
+      document.getElementById('gallery-desc').value = '';
+      document.getElementById('modal-gallery-title').innerText = 'Tambah Dokumentasi Foto';
+      openModal('modal-gallery');
+    }
+
+    function editGallery(id) {
+      const gal = appState.galeri.find(g => g.id === id);
+      if (!gal) return;
+
+      document.getElementById('gallery-id').value = gal.id;
+      document.getElementById('gallery-title').value = gal.judulKegiatan;
+      document.getElementById('gallery-date').value = gal.tanggal;
+      document.getElementById('gallery-image-url').value = gal.fotoUrl;
+      document.getElementById('gallery-desc').value = gal.deskripsi || '';
+      document.getElementById('modal-gallery-title').innerText = 'Ubah Dokumentasi Foto';
+      openModal('modal-gallery');
+    }
+
+    function handleSaveGallery(e) {
+      e.preventDefault();
+      const id = document.getElementById('gallery-id').value;
+      const data = {
+        judulKegiatan: document.getElementById('gallery-title').value.trim(),
+        tanggal: document.getElementById('gallery-date').value.trim(),
+        fotoUrl: document.getElementById('gallery-image-url').value.trim(),
+        deskripsi: document.getElementById('gallery-desc').value.trim()
+      };
+
+      if (id) {
+        const index = appState.galeri.findIndex(g => g.id === id);
+        if (index !== -1) appState.galeri[index] = { ...appState.galeri[index], ...data };
+        showToast('Foto dokumentasi diperbarui.', 'Tersimpan');
+      } else {
+        appState.galeri.push({ id: 'gal_' + Date.now(), ...data });
+        showToast('Foto dokumentasi kegiatan berhasil ditambahkan.', 'Tersimpan');
+      }
+
+      closeModal('modal-gallery');
+      renderAdminGalleryGrid();
+      renderPublicGallery();
+    }
+
+    function deleteGallery(id) {
+      appState.galeri = appState.galeri.filter(g => g.id !== id);
+      showToast('Foto telah dihapus dari galeri.', 'Dihapus', 'info');
+      renderAdminGalleryGrid();
+      renderPublicGallery();
+    }
+
+    /* Messages & Inbox Management (KNTK-3, KNTK-4) */
+    function renderAdminMessages() {
+      const container = document.getElementById('adm-messages-container');
+      if (!appState.pesanKontak.length) {
+        container.innerHTML = `
+          <div class="text-center py-12 text-slate-400">
+            <i class="fa-regular fa-envelope-open text-4xl mb-2"></i>
+            <p class="text-xs">Kotak masuk kosong. Belum ada pesan dari pengunjung.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = appState.pesanKontak.map(msg => `
+        <div class="p-5 rounded-2xl border transition-all ${msg.statusBaca === 'belum_dibaca' ? 'bg-brand-50/40 border-brand-200' : 'bg-white border-slate-200'}">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-sm text-slate-900">${msg.nama}</span>
+              <span class="text-xs text-slate-500 font-mono">&lt;${msg.email}&gt;</span>
+              ${msg.statusBaca === 'belum_dibaca' ? '<span class="px-2 py-0.5 rounded-full bg-rose-500 text-white text-[10px] font-bold">Baru</span>' : ''}
+            </div>
+            <span class="text-xs text-slate-400">${msg.createdAt}</span>
+          </div>
+
+          <h4 class="text-sm font-semibold text-slate-800 mb-1">${msg.subjek}</h4>
+          <p class="text-xs text-slate-600 leading-relaxed bg-white/80 p-3 rounded-xl border border-slate-100">${msg.pesan}</p>
+
+          <div class="mt-4 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              ${msg.statusBaca === 'belum_dibaca' ? `
+                <button onclick="markMessageAsRead('${msg.id}')" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+                  <i class="fa-regular fa-envelope-open text-brand-600"></i> Tandai Sudah Dibaca
+                </button>
+              ` : `
+                <span class="text-xs text-emerald-600 font-semibold flex items-center gap-1">
+                  <i class="fa-solid fa-check-double"></i> Sudah Dibaca
+                </span>
+              `}
+              <button onclick="copySenderEmail('${msg.email}')" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+                <i class="fa-regular fa-copy"></i> Salin Email
+              </button>
+            </div>
+
+            <button onclick="deleteMessage('${msg.id}')" class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg" title="Hapus Pesan">
+              <i class="fa-solid fa-trash-can text-sm"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function markMessageAsRead(id) {
+      const msg = appState.pesanKontak.find(m => m.id === id);
+      if (!msg) return;
+      msg.statusBaca = 'sudah_dibaca';
+      renderAdminMessages();
+      updateUnreadMessageBadge();
+      showToast('Pesan ditandai sebagai sudah dibaca.', 'Status Pesan');
+    }
+
+    function copySenderEmail(email) {
+      const tempInput = document.createElement('input');
+      tempInput.value = email;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+      showToast(`Email ${email} disalin ke papan klip.`, 'Tersalin', 'info');
+    }
+
+    function deleteMessage(id) {
+      appState.pesanKontak = appState.pesanKontak.filter(m => m.id !== id);
+      renderAdminMessages();
+      updateUnreadMessageBadge();
+      showToast('Pesan telah dihapus dari kotak masuk.', 'Dihapus', 'info');
+    }
+
+    window.onload = function() {
+      renderPublicView();
+
+      window.addEventListener('keydown', function(event) {
+        if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === 'l') {
+          event.preventDefault();
+          handlePortalSwitch();
+        }
+      });
+    };
+  </script>
+</body>
+</html>
