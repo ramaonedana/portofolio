@@ -946,18 +946,22 @@
   <script>
     /* 
       KONFIGURASI KONEKSI SUPABASE:
-      Ganti kedua nilai di bawah ini dengan Project URL dan anon key milik proyek Supabase Anda jika ingin terhubung ke cloud.
+      Ganti kedua nilai di bawah ini dengan Project URL dan anon key milik proyek Supabase Anda!
     */
     const SUPABASE_URL = 'https://nlystxxokrujzvvchujj.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5seXN0eHhva3J1anp2dmNodWpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk2ODk4NjEsImV4cCI6MjEwNTI2NTg2MX0.OQRjpNtmbP3L8_YtdnDs74Qrn4HEFxPVJT-CpJv525Y';
 
     let supabaseClient = null;
-    try {
-      if (typeof window.supabase !== 'undefined' && SUPABASE_URL.startsWith('https://') && !SUPABASE_URL.includes('xyzcompany')) {
+    const isSupabaseConfigured = typeof window.supabase !== 'undefined' && 
+                                 SUPABASE_URL.startsWith('https://') && 
+                                 !SUPABASE_URL.includes('xyzcompany');
+
+    if (isSupabaseConfigured) {
+      try {
         supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      } catch (e) {
+        console.error("Gagal menghubungkan ke Supabase:", e);
       }
-    } catch (e) {
-      console.warn("Supabase belum dikonfigurasi, mode lokal aktif.");
     }
 
     // Membaca status sesi tersimpan agar tidak perlu login ulang setiap refresh
@@ -1694,11 +1698,32 @@
       const biografi_singkat = document.getElementById('adm-prof-bio').value.trim();
       const filosofi_mengajar = document.getElementById('adm-prof-philosophy').value.trim();
 
-      if (supabaseClient && appState.profil.id) {
-        await supabaseClient.from('profil').update({ nama_lengkap, bidang_keahlian, biografi_singkat, filosofi_mengajar }).eq('id', appState.profil.id);
+      if (supabaseClient) {
+        // Update data jika ID profil ditemukan di cloud
+        const targetId = appState.profil.id && !appState.profil.id.startsWith('prof_') ? appState.profil.id : null;
+        let result;
+        if (targetId) {
+          result = await supabaseClient.from('profil').update({ 
+            nama_lengkap, bidang_keahlian, biografi_singkat, filosofi_mengajar 
+          }).eq('id', targetId);
+        } else {
+          result = await supabaseClient.from('profil').insert([{ 
+            nama_lengkap, bidang_keahlian, biografi_singkat, filosofi_mengajar, email_kontak: appState.profil.emailKontak 
+          }]);
+        }
+
+        if (result.error) {
+          console.error("Gagal simpan profil ke Supabase:", result.error);
+          showToast("Gagal menyimpan ke database cloud: " + result.error.message, "Gagal Sinkron", "error");
+          return;
+        }
+      } else {
+        showToast("Perhatian: Kunci Supabase belum dipasang di kode. Data hanya tersimpan sementara.", "Mode Offline", "error");
       }
+
       appState.profil = { ...appState.profil, namaLengkap: nama_lengkap, bidangKeahlian: bidang_keahlian, biografiSingkat: biografi_singkat, filosofiMengajar: filosofi_mengajar };
-      showToast('Profil guru berhasil disimpan!', 'Tersimpan');
+      showToast('Profil guru berhasil disimpan ke database!', 'Tersimpan');
+      await loadDataFromSupabase();
       renderPublicView();
     }
 
@@ -1741,7 +1766,7 @@
       const doiUrl = tipeKarya === 'sinta' ? document.getElementById('module-doi-url').value.trim() : null;
 
       if (supabaseClient) {
-        await supabaseClient.from('karya').insert([{
+        const { error } = await supabaseClient.from('karya').insert([{
           tipe_karya: tipeKarya,
           judul,
           mata_pelajaran: mataPelajaran,
@@ -1753,7 +1778,14 @@
           doi_url: doiUrl,
           status_publikasi: 'publik'
         }]);
+
+        if (error) {
+          console.error("Gagal simpan karya ke Supabase:", error);
+          showToast("Gagal simpan ke Supabase: " + error.message, "Gagal Sinkron", "error");
+          return;
+        }
       } else {
+        showToast("Perhatian: Kunci Supabase belum dipasang di GitHub. Data hanya tersimpan di perangkat ini.", "Mode Offline", "error");
         appState.modulAjar.unshift({
           id: 'mod_' + Date.now(),
           tipeKarya,
@@ -1770,7 +1802,7 @@
       }
       closeModal('modal-module');
       await loadDataFromSupabase();
-      showToast('Karya berhasil disimpan!', 'Berhasil');
+      showToast('Karya berhasil disimpan ke Cloud!', 'Berhasil');
     }
 
     // Modal Konfirmasi Hapus Khusus (Tanpa browser confirm dialog)
@@ -1778,8 +1810,15 @@
       document.getElementById('modal-confirm-msg').innerText = "Apakah Anda yakin ingin menghapus karya modul/artikel ini?";
       const btn = document.getElementById('btn-confirm-delete-action');
       btn.onclick = async function() {
-        if (supabaseClient) await supabaseClient.from('karya').delete().eq('id', id);
-        else appState.modulAjar = appState.modulAjar.filter(m => m.id !== id);
+        if (supabaseClient) {
+          const { error } = await supabaseClient.from('karya').delete().eq('id', id);
+          if (error) {
+            showToast("Gagal menghapus dari cloud: " + error.message, "Gagal", "error");
+            return;
+          }
+        } else {
+          appState.modulAjar = appState.modulAjar.filter(m => m.id !== id);
+        }
         closeModal('modal-confirm-delete');
         await loadDataFromSupabase();
         renderAdminDashboard();
@@ -1792,8 +1831,15 @@
       document.getElementById('modal-confirm-msg').innerText = "Apakah Anda yakin ingin menghapus sertifikat ini?";
       const btn = document.getElementById('btn-confirm-delete-action');
       btn.onclick = async function() {
-        if (supabaseClient) await supabaseClient.from('sertifikasi').delete().eq('id', id);
-        else appState.sertifikasi = appState.sertifikasi.filter(c => c.id !== id);
+        if (supabaseClient) {
+          const { error } = await supabaseClient.from('sertifikasi').delete().eq('id', id);
+          if (error) {
+            showToast("Gagal menghapus dari cloud: " + error.message, "Gagal", "error");
+            return;
+          }
+        } else {
+          appState.sertifikasi = appState.sertifikasi.filter(c => c.id !== id);
+        }
         closeModal('modal-confirm-delete');
         await loadDataFromSupabase();
         renderAdminDashboard();
@@ -1820,7 +1866,13 @@
       const foto_sertifikat_url = document.getElementById('cert-photo-url').value.trim() || 'https://images.unsplash.com/photo-1589330694653-dad6ef49ca60?w=800&auto=format&fit=crop&q=80';
 
       if (supabaseClient) {
-        await supabaseClient.from('sertifikasi').insert([{ judul_penghargaan, kategori, tahun_perolehan, institusi_penerbit, foto_sertifikat_url }]);
+        const { error } = await supabaseClient.from('sertifikasi').insert([{ 
+          judul_penghargaan, kategori, tahun_perolehan, institusi_penerbit, foto_sertifikat_url 
+        }]);
+        if (error) {
+          showToast("Gagal simpan sertifikat: " + error.message, "Gagal", "error");
+          return;
+        }
       } else {
         appState.sertifikasi.push({
           id: 'cert_' + Date.now(),
@@ -1833,7 +1885,7 @@
       }
       closeModal('modal-cert');
       await loadDataFromSupabase();
-      showToast('Sertifikat berhasil ditambahkan.', 'Tersimpan');
+      showToast('Sertifikat berhasil ditambahkan ke Cloud!', 'Tersimpan');
     }
 
     function openModalGallery() {
@@ -1851,7 +1903,11 @@
       const foto_url = document.getElementById('gallery-image-url').value.trim();
 
       if (supabaseClient) {
-        await supabaseClient.from('galeri').insert([{ judul_kegiatan, tanggal, foto_url }]);
+        const { error } = await supabaseClient.from('galeri').insert([{ judul_kegiatan, tanggal, foto_url }]);
+        if (error) {
+          showToast("Gagal simpan galeri: " + error.message, "Gagal", "error");
+          return;
+        }
       } else {
         appState.galeri.push({
           id: 'gal_' + Date.now(),
@@ -1862,7 +1918,7 @@
       }
       closeModal('modal-gallery');
       await loadDataFromSupabase();
-      showToast('Foto galeri berhasil disimpan.', 'Tersimpan');
+      showToast('Foto galeri berhasil disimpan ke Cloud.', 'Tersimpan');
     }
 
     function deleteGallery(id) {
